@@ -243,7 +243,6 @@
                     url: '/api/stored-user-info/' + userId,
                     success: function (response) {
                         callback(response);
-                        console.log('response', response);
                     }
                 });
             }
@@ -377,12 +376,14 @@
             // when select View Playlists
             function setGetUserPlaylistsListener() {
                 document.getElementById("viewPlaylistButton").addEventListener("click", function () {
-                    if (document.getElementById('createPlaylistDiv') != null) {
-                        var pDiv = document.getElementById('createPlaylistDiv');
-                        if (pDiv != null) {
-                            pDiv.parentNode.removeChild(pDiv);
-                        }
-                    }
+                    // if (document.getElementById('createPlaylistDiv') != null) {
+                    //     var pDiv = document.getElementById('createPlaylistDiv');
+                    //     if (pDiv != null) {
+                    //         pDiv.parentNode.removeChild(pDiv);
+                    //     }
+                    // }
+                    $('#createPlaylistDiv').hide();
+                    $('#submitPlaylistForm').hide();
                     if ((document.getElementById('viewButton').className) == 'btn btn-success') {
                         getUserPlaylists();
                     }
@@ -542,7 +543,7 @@
                         .attr('class', 'text')
                         .attr('text-anchor', 'left')
                         .attr('transform', 'translate(1100,135)')
-                        .text('Valence')
+                        .text('Valence');
 
                     svgD3.append('line')
                         .attr('x1', 1070)
@@ -692,13 +693,14 @@
                     div.setAttribute("id", "createPlaylistDiv");
                     showExerciseForm();
 
-                    form = document.getElementById("submitPlaylistForm");
+                    let form = document.getElementById("submitPlaylistForm");
                     div.appendChild(form);
 
                     body.appendChild(div)
                     document.getElementById("createButton").className = 'btn btn-success disabled';
                     document.getElementById("viewButton").className = 'btn btn-success';
-
+                    var pDiv = document.getElementById('viewPlaylistDiv');
+                    $('#viewPlaylistDiv').hide();
                 })
             }
 
