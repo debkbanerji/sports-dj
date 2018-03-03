@@ -222,6 +222,8 @@ refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
 processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes, callback) {
     const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks?offset=' + index;
 
+    console.log(userID, playlistID, index);
+
     request({
         url: requestURL,
         method: 'GET',
@@ -286,14 +288,18 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
 
                     } else {
-                        finalRes.send(error);
+                        if (finalRes) {
+                            finalRes.send(error);
+                        }
                         console.log(error);
                         console.log(response);
                     }
                 });
             }
         } else {
-            finalRes.send(error);
+            if (finalRes) {
+                finalRes.send(error);
+            }
             console.log(error);
             console.log(response);
         }
