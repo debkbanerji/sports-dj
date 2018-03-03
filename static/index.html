@@ -345,7 +345,7 @@
 
                         var yAxis2 = d3.axisLeft(yscale2).ticks(11);
 
-                        var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
+                        var xAxis = d3.axisBottom(xscale).ticks(songNames.length).tickFormat("");
 
                         var danceLine = d3.line()
                             .x(function(d, i) {return xscale(i) + 30;})
@@ -415,7 +415,7 @@
 
                         svgD3.append('g')
                             .attr('class', 'xaxis')
-                            .attr('transform', 'translate(30, 860)')
+                            .attr('transform', 'translate(30, 850)')
                             .attr('stroke', 'white')
                             .call(xAxis);
 
