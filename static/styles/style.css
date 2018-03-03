@@ -6,9 +6,15 @@ body {
 .row {
     text-align: center;
     width: 100%;
-
 }
 
 table {
     color: white;
+}
+
+.playlistTable {
+    text-align: left;
+    border-style: hidden;
+    padding: 15px;
+    border-bottom-color: transparent;
 }
