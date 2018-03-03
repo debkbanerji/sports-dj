@@ -368,6 +368,20 @@ getSongList = function (songMap) {
     songList = songList.sort(function (a, b) {
         return a.index - b.index;
     });
+
+    for (var i = 0; i< songList.length; i++) {
+        var exType = ""
+        var intensity = songList[i]['exercise-intensity']
+        if (intensity >= 150) {
+            exType = "Strength"
+        } else if (intensity >= 75) {
+            exType = 'Cardio'
+        } else{
+            exType = 'Yoga'
+        }
+        songList[i]['exercise-type'] = exType
+    }
+
     return songList;
 };
 
@@ -380,15 +394,15 @@ router.post('/create-playlist', function (req, finalRes) {
 
     const suitabilityThreshold = 0.3;
 
-    let startIntensity = 67;
-    let endIntensity = 100;
+    let startIntensity = 150;
+    let endIntensity = 200;
 
     if (targetExerciseType === 'Cardio') {
-        startIntensity = 34;
-        endIntensity = 66;
+        startIntensity = 75;
+        endIntensity = 149;
     } else if (targetExerciseType === 'Yoga') {
         startIntensity = 0;
-        endIntensity = 33;
+        endIntensity = 74;
     }
 
     database.ref('user-songs')

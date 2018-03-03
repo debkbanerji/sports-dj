@@ -71,10 +71,10 @@
 
 <div id="submitPlaylistForm">
     <div class="row">
+
         <div class="form-group">
         <label class="control-label col-sm" for="exercisetype">Exercise Type</label><br>
-        <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">
-            <option value="Strength">Strength</option>
+        <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">            <option value="Strength">Strength</option>
             <option value="Cardio">Cardio</option>
             <option value="Yoga">Yoga</option>
         </select>
@@ -440,12 +440,16 @@
 
                 var div = document.getElementById('graphsDiv');
 
-                div.appendChild(svg)
+                div.appendChild(svg);
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
 
                     var dataV = Object.values(data)
+                    console.log(dataV)
+
+                    let totalCalories = getTotalCalories(dataV);
+                    console.log(totalCalories);
 
                     // if (showSongs) {
                     //     addTableRows(element, dataV)
@@ -453,11 +457,73 @@
                     //     deleteTableRows(element, dataV)
                     // }
 
-                    console.log(dataV)
-
                     playlistData = dataV;
 
                     var svgD3 = d3.select('svg');
+
+                    var exTypes = d3.nest()
+                        .key(function(d) {return d['exercise-type'];})
+                        .rollup(function(values) {return d3.sum(values, function() {return 1;})})
+                        .entries(dataV);
+
+                    var barYscale = d3.scaleLinear()
+                        .domain([0,d3.max(exTypes, function(d) {return d.value;})])
+                        .range([400,0])
+
+                    var barXscale = d3.scaleOrdinal()
+                        .domain(data.map(function(d) {return d['exercise-type'];}))
+                        .range([75,235, 395])
+
+                    var barXaxis = d3.axisBottom(barXscale).ticks(3);
+
+                    var barYaxis = d3.axisLeft(barYscale).ticks(6);
+
+                    svgD3.append('g')
+                        .attr('class', 'yaxis')
+                        .attr('transform', 'translate(50, 950)')
+                        .attr('stroke', 'white')
+                        .call(barYaxis);
+
+                    svgD3.append('g')
+                        .attr('class', 'barxaxis')
+                        .attr('transform', 'translate(50, 1350)')
+                        .attr('stroke', 'white')
+                        .call(barXaxis);
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(20,1150)rotate(-90)')
+                        .text('Number of Songs in Playlist')
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(300,1390)')
+                        .text('Song Exercise Type')
+
+                    svgD3.append('text')
+                        .attr('class', 'title')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(300,940)')
+                        .text('Song Suitability Breakdown')
+
+                    svgD3.selectAll('rect')
+                        .data(exTypes)
+                        .enter()
+                        .append('rect')
+                        .attr('fill', function(d) {
+                            if (d.key == 'Cardio') {
+                                return '#30842e';
+                            } else if (d.key == 'Yoga') {
+                                return '#82D7E8';
+                            }
+                            return 'white';
+                        })
+                        .attr('transform', function(d, i) {return 'translate(' + (75 + i*160) + ',' + (950+ barYscale(d.value)) + ')';})
+                        .attr('width', 100)
+                        .attr('height', function(d) {return 400-barYscale(d.value);})
+
 
                     var maxDance = d3.max(dataV, function (d) {
                         return d.danceability;
@@ -765,6 +831,29 @@
                         callback(response)
                     }
                 });
+            }
+
+            function getTotalCalories(songList) {
+                let result = [];
+                for (let i = 0; i < songList.length; i++) {
+                    const song = songList[i];
+                    const weightKil = userProfile.weight / 2.2;
+                    const durationSeconds = song['duration-ms'] / 1000;
+                    let metValue = 10;
+                    const type = song['exercise-type'];
+                    if (type === 'Yoga') {
+                        metValue = 3;
+                    } else if (type === 'Cardio') {
+                        metValue = 7;
+                    }
+                    const songCalories = weightKil * metValue * durationSeconds / 3600;
+                    result.push(songCalories);
+                }
+                return result.reduce(add, 0);
+            }
+
+            function add(a, b) {
+                return a + b;
             }
 
             function createPlaylist(userId, playlistName, exerciseType, maxSongs, callback) {
