@@ -102,3 +102,8 @@ table {
     top: 0px;
     left: 300px;
 }
+
+#submitBMI {
+    text-align: center;
+    width: 30%;
+}

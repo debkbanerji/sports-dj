@@ -169,6 +169,12 @@ function getRandomSubarray(arr, size) {
     return shuffled.slice(0, size);
 }
 
+function upthenDown(arr, upRatio) {
+    let start = 0;
+    let end = arr.length - 1;
+    let result = [];
+}
+
 router.get('/stored-user-info/:id', function (req, res) {
     const id = req.params.id;
     database.ref('/user-profiles/' + id).once('value').then(function (snapshot) {
@@ -253,7 +259,7 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
             if (responseObject.total === index) {
                 delete songMap[null];
                 database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
-                database.ref('user-songs/' + userID).update(songMap);
+                database.ref('user-songs').update(songMap);
                 if (callback) {
                     callback()
                 } else {
@@ -311,6 +317,8 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                             songMap[id]['exercise-suitability'] = Math.max(songMap[id]['exercise-suitability'], 0);
                             songMap[id]['exercise-intensity'] = Math.min(songMap[id]['exercise-intensity'], 100);
                             songMap[id]['exercise-intensity'] = Math.max(songMap[id]['exercise-intensity'], 0);
+
+                            songMap[id]['exercise-intensity'] = songMap[id]['exercise-intensity'] * 2;
                         }
 
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
@@ -383,7 +391,7 @@ router.post('/create-playlist', function (req, finalRes) {
         endIntensity = 33;
     }
 
-    database.ref('user-songs/' + userId)
+    database.ref('user-songs')
         .orderByChild('exercise-intensity')
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
@@ -395,7 +403,8 @@ router.post('/create-playlist', function (req, finalRes) {
             let songObjects = Object.values(songs);
             songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
-                return (a['exercise-intensity']+ a['tempo']) - (b['exercise-intensity'] + b['tempo']);
+                // return (a['exercise-intensity'] + a['tempo']) - (b['exercise-intensity'] + b['tempo']);
+                return (a['exercise-intensity']) - (b['exercise-intensity']);
             });
             const songIds = [];
             for (let j = 0; j < songObjects.length; j++) {

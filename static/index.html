@@ -19,7 +19,7 @@
     <script src="https://use.fontawesome.com/287f0668e1.js"></script>
     <link href="https://use.fontawesome.com/287f0668e1.css" media="all" rel="stylesheet">
     <style type="text/css">
-        #login, #loggedin {
+        #login, #loggedin, #submitBMI {
             display: none;
         }
     </style>
@@ -67,12 +67,36 @@
     </div>
     <br>
 
-</div>
+</div> <!-- end of loggedin -->
+
+<div id="submitBMI">
+    <form class="form-horizontal" action="/action_page.php">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li>Strength</li>
+              <li>Cardio</li>
+              <li>Yoga</li>
+            </ul>
+         </div>
+         <div class="form-group">
+          <label class="control-label col-sm" for="numSongs">Number of Songs</label>
+          <div class="col-sm-10">
+            <input type="numSongs" class="form-control" id="numSongs" placeholder="Enter number of songs" name="numSongs">
+          </div>
+        </div>
+        <br>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+        </div>
+      </form>
 </div>
 
 <script id="oauth-template" type="text/x-handlebars-template">
 </script>
-
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -124,6 +148,7 @@
                         authResponse = response;
                         userId = response.id;
                         $('#login').hide();
+                        $('#submitBMI').hide();
                         $('#loggedin').show();
 
                         // Set up listeners
@@ -136,6 +161,7 @@
             } else {
                 // render initial screen
                 $('#login').show();
+                $('#submitBMI').hide();
                 $('#loggedin').hide();
             }
             let obtainNewToken = function () {
@@ -582,7 +608,9 @@
                 document.getElementById("createPlaylistButton").addEventListener("click", function () {
                     if ((document.getElementById('createButton').className) == 'btn btn-success') {
                         var pDiv = document.getElementById('viewPlaylistDiv');
-                        pDiv.parentNode.removeChild(pDiv);
+                        if (pDiv != null) {
+                            pDiv.parentNode.removeChild(pDiv);
+                        }
                     }
 
                     var body = document.getElementsByTagName("body")[0];
@@ -593,7 +621,14 @@
                     body.appendChild(div)
                     document.getElementById("createButton").className = 'btn btn-success disabled';
                     document.getElementById("viewButton").className = 'btn btn-success';
+                    showExerciseForm();
                 })
+            }
+
+            function showExerciseForm() {
+                $('#submitBMI').show();
+                $('#loggedin').show();
+                $('#login').hide();
             }
 
 

@@ -2,5 +2,8 @@
     "rules": {
         ".read": "true",
         ".write": "true",
+        "user-songs": {
+            ".indexOn": "exercise-intensity"
+        }
     }
 }
