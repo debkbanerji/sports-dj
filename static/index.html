@@ -179,25 +179,28 @@
                         console.log(response);
 
                         var body = document.getElementsByTagName("body")[0];
-                        var newRow = document.createElement('newRow');
-                        newRow.setAttribute("class", "row");
+                        var newRow = document.createElement("newRow");
+                        // newRow.setAttribute("class", "row");
+                        newRow.setAttribute("id", "elementsRow");
 
-                        var div = document.createElement('div');
-                        div.setAttribute("id", "viewPlaylistDiv");
-                        div.setAttribute("class", "col-sm");
-                        newRow.appendChild(div);
-                        // TODO: create other column and add as child to newRow
-                        
                         var div = document.createElement("div");
-                        div.setAttribute("id", 'graphsDiv')
-                        body.appendChild(div);
+                        div.setAttribute("id", "viewPlaylistDiv");
+                        div.setAttribute("class", "col-xs-5 col-sm-6 col-lg-4");
+                        newRow.appendChild(div);
+
+                        var newdiv = document.createElement("div");
+                        newdiv.setAttribute("id", "graphsDiv");
+                        newdiv.setAttribute("class", "col-xs-7 col-sm-6 col-lg-8");
 
                         var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                         svg.setAttribute('style', 'border: 1px grey');
                         svg.setAttribute('width', '1080');
                         svg.setAttribute('height', '2000');
 
-                        div.appendChild(svg);
+                        newdiv.appendChild(svg);
+                        newRow.appendChild(newdiv);
+                        body.appendChild(newRow);
+
 
                         var tbl = document.createElement('table');
 

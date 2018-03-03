@@ -17,8 +17,11 @@ table {
 .playlistTable {
     text-align: left;
     border-style: hidden;
-    padding: 10%;
+    /* padding: 10%; */
     border-bottom-color: transparent;
+    position: absolute;
+    left: 10px;
+    top: 0px;
 }
 
 .button:hover {
@@ -26,17 +29,8 @@ table {
     color: white;
 }
 
-#viewPlaylistDiv {
-    centers the playlist div
-    position: absolute;
-    left: 50%;
-    margin-left: -100px;
-} */
-
 .yaxis line {
     stroke: white;
-}
-    left: 10%;
 }
 
 .tableRow {
@@ -63,4 +57,22 @@ table {
     color: #FFFFFF;
     font-size: 20px;
     font-family: 'Open Sans', sans-serif;
+}
+
+#elementsRow {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 50px;
+}
+
+#viewPlaylistDiv {
+    /* margin-top: 0px; */
+    left: 20px;
+}
+
+#graphsDiv {
+    position: absolute;
+    top: 220px;
+    left: 240px;
 }
