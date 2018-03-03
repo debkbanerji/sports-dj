@@ -440,6 +440,16 @@
 
                 var div = document.getElementById('graphsDiv');
 
+                var tbl = document.createElement('table');
+                tbl.setAttribute('id', 'summaryTable');
+
+                div.appendChild(tbl);
+
+                var tblBody = document.createElement('tbody');
+                tblBody.setAttribute('id', 'tableBody');
+
+                tbl.appendChild(tblBody)
+
                 div.appendChild(svg);
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
@@ -448,8 +458,58 @@
                     var dataV = Object.values(data)
                     console.log(dataV)
 
-                    let totalCalories = getTotalCalories(dataV);
-                    console.log(totalCalories);
+                    var totCal = getTotalCalories(dataV)
+                    var avgs = getAverages(dataV)
+                    console.log(avgs)
+
+                    var summaryRow = document.createElement("tr");
+                    var summaryCell = document.createElement("td");
+                    var summaryText = document.createTextNode("Playlist Summary:");
+                    summaryCell.appendChild(summaryText)
+                    summaryRow.appendChild(summaryCell)
+                    tblBody.appendChild(summaryRow)
+
+                    var calsRow = document.createElement("tr");
+                    var calsCell = document.createElement("td");
+                    var calsText = document.createTextNode("Total Calories Burned: " + totCal.toString() );
+                    calsCell.appendChild(calsText)
+                    calsRow.appendChild(calsCell)
+                    tblBody.appendChild(calsRow)
+
+                    var danceRow = document.createElement("tr");
+                    var danceCell = document.createElement("td");
+                    var danceText = document.createTextNode("Average Danceability: " + avgs['danceability'].toString());
+                    danceCell.appendChild(danceText)
+                    danceRow.appendChild(danceCell)
+                    tblBody.appendChild(danceRow)
+
+                    var valenceRow = document.createElement("tr");
+                    var valenceCell = document.createElement("td");
+                    var valenceText = document.createTextNode("Average Valence: "+ avgs['valence'].toString());
+                    valenceCell.appendChild(valenceText)
+                    valenceRow.appendChild(valenceCell)
+                    tblBody.appendChild(valenceRow)
+
+                    var energyRow = document.createElement("tr");
+                    var energyCell = document.createElement("td");
+                    var energyText = document.createTextNode("Average Energy: "+ avgs['energy'].toString());
+                    energyCell.appendChild(energyText)
+                    energyRow.appendChild(energyCell)
+                    tblBody.appendChild(energyRow)
+
+                    var tempoRow = document.createElement("tr");
+                    var tempoCell = document.createElement("td");
+                    var tempoText = document.createTextNode("Average Tempo: "+ avgs['tempo'].toString());
+                    tempoCell.appendChild(tempoText)
+                    tempoRow.appendChild(tempoCell)
+                    tblBody.appendChild(tempoRow)
+
+                    var intensityRow = document.createElement("tr");
+                    var intensityCell = document.createElement("td");
+                    var intensityText = document.createTextNode("Average Intensity: "+ avgs['intensity'].toString());
+                    intensityCell.appendChild(intensityText)
+                    intensityRow.appendChild(intensityCell)
+                    tblBody.appendChild(intensityRow)
 
                     // if (showSongs) {
                     //     addTableRows(element, dataV)
@@ -860,6 +920,34 @@
 
             function add(a, b) {
                 return a + b;
+            }
+
+            function getAverages(songList) {
+                var result = {};
+                var dance = 0.0;
+                var valence = 0.0;
+                var tempo = 0.0;
+                var energy = 0.0;
+                var intensity = 0.0;
+                for (var i = 0; i < songList.length; i++) {
+                    var song = songList[i];
+                    dance = dance + song['danceability'];
+                    valence = valence + song['valence'];
+                    tempo = tempo + song['tempo'];
+                    energy = energy + song['energy'];
+                    intensity = intensity + song['exercise-intensity'];
+                }
+                dance = dance/songList.length;
+                valence = valence/songList.length;
+                energy = energy/songList.length;
+                tempo = tempo/songList.length;
+                intensity = intensity/songList.length;
+                result['danceability'] = dance;
+                result['valence'] = valence;
+                result['tempo'] = tempo;
+                result['energy'] = energy;
+                result['intensity'] = intensity;
+                return result;
             }
 
             function createPlaylist(userId, playlistName, exerciseType, maxSongs, callback) {
