@@ -158,6 +158,17 @@ shuffle = function (a) {
     return a; // Note: This is an in place shuffle, so a return statement is not necessary
 };
 
+function getRandomSubarray(arr, size) {
+    let shuffled = arr.slice(0), i = arr.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(0, size);
+}
+
 router.get('/stored-user-info/:id', function (req, res) {
     const id = req.params.id;
     database.ref('/user-profiles/' + id).once('value').then(function (snapshot) {
@@ -356,22 +367,34 @@ router.post('/create-playlist', function (req, finalRes) {
     const accessToken = req.body.accessToken;
     const userId = req.body.userId;
     const playlistName = req.body.playlistName;
+    const maxSongs = Number(req.body.maxSongs);
     const targetExerciseType = req.body.exerciseType;
 
-    let startIntensity = 70;
-    let endIntensity = 100;
     const suitabilityThreshold = 0.3;
+
+    let startIntensity = 67;
+    let endIntensity = 100;
+
+    if (targetExerciseType === 'Cardio') {
+        console.log('cardio');
+        startIntensity = 34;
+        endIntensity = 66;
+    } else if (targetExerciseType === 'Yoga') {
+        startIntensity = 0;
+        endIntensity = 33;
+    }
 
     database.ref('user-songs/' + userId)
         .orderByChild('exercise-intensity')
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
-        .limitToFirst(200)
+        .limitToFirst(maxSongs * 2)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
             let songObjects = Object.values(songs);
+            songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
                 return a['exercise-intensity'] - b['exercise-intensity'];
             });
@@ -396,7 +419,7 @@ router.post('/create-playlist', function (req, finalRes) {
             request.post(createPlaylistOptions, function (error, response, body) {
                 if (!error) {
                     const playlistId = JSON.parse(body).id;
-                    finalRes.send(songObjects);
+                    finalRes.send(playlistId);
                     addSongsToPlaylist(songIds, 0, userId, playlistId, accessToken)
                 } else {
                     console.log(error);
