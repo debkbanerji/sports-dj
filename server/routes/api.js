@@ -188,7 +188,8 @@ router.get('/playlist-list/:userID', function (req, res) {
                 if (playlist.public) {
                     let playlistObject = {
                         'name': playlist.name,
-                        'id': playlist.id
+                        'id': playlist.id,
+                        'ownerId': playlist.owner.id
                     };
                     if (playlist.images && playlist.images.length > 1) {
                         playlistObject.thumbnailURL = playlist.images[1].url;
@@ -221,6 +222,8 @@ refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
 // Updates the song map with the necessary information and uploads it to firebase once all songs have been processed
 processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes, callback) {
     const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks?offset=' + index;
+
+    console.log(userID, playlistID, index);
 
     request({
         url: requestURL,
@@ -286,14 +289,18 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
 
                     } else {
-                        finalRes.send(error);
+                        if (finalRes) {
+                            finalRes.send(error);
+                        }
                         console.log(error);
                         console.log(response);
                     }
                 });
             }
         } else {
-            finalRes.send(error);
+            if (finalRes) {
+                finalRes.send(error);
+            }
             console.log(error);
             console.log(response);
         }
