@@ -185,11 +185,13 @@ router.get('/playlist-list/:userID', function (req, res) {
 
             for (let i = 0; i < items.length; i++) {
                 const playlist = items[i];
-                result.push({
-                    'name': playlist.name,
-                    'id': playlist.id,
-                    'thumbnailURL': playlist.images[1].url
-                })
+                if (playlist.public) {
+                    result.push({
+                        'name': playlist.name,
+                        'id': playlist.id,
+                        'thumbnailURL': playlist.images[1].url
+                    });
+                }
             }
 
             res.send(result);
