@@ -206,6 +206,98 @@ router.get('/playlist-list/:userID', function (req, res) {
     });
 });
 
+router.post('/refresh-playlist-info/', function (req, res) {
+    const accessToken = req.body.accessToken;
+    const playlistID = req.body.playlistID;
+    const userID = req.body.userId;
+    refreshPlaylist(playlistID, userID, accessToken, res)
+});
+
+refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
+    const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks';
+
+    request({
+        url: requestURL,
+        method: 'GET',
+        auth: {
+            'bearer': accessToken
+        }
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            const items = JSON.parse(body).items;
+            const songMap = {};
+            const songList = [];
+
+            for (let i = 0; i < items.length; i++) {
+                const song = items[i].track;
+                songList.push(song);
+                const artists = [];
+                for (let j = 0; j < song.artists.length; j++) {
+                    artists.push(song.artists[j].name)
+                }
+                songMap[song.id] = {
+                    'id': song.id,
+                    'name': song.name,
+                    'popularity': song.popularity,
+                    'artists': artists,
+                    'duration-ms': song.duration_ms
+                };
+            }
+
+
+            processSongList(songList, 0, songMap, userID, playlistID, accessToken, finalRes);
+        } else {
+            finalRes.send(error);
+            console.log(error);
+            console.log(response);
+        }
+    });
+};
+
+// Updates the song map with the necessary information and uploads it to firebase once all songs have been processed
+processSongList = function (songList, index, songMap, userID, playlistID, accessToken, finalRes) {
+    console.log('index', index);
+    console.log(songList.length);
+    if (index >= songList.length) {
+        database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
+        finalRes.send(true);
+    } else {
+        // IDs of songs who's song information we're retrieving
+        const querySongIDs = [];
+        while (index < songList.length && querySongIDs.length < 99) {
+            let song = songList[index++];
+            querySongIDs.push(song.id);
+        }
+
+        const requestURL = 'https://api.spotify.com/v1/audio-features?ids=' + querySongIDs.join(',');
+
+        request({
+            url: requestURL,
+            method: 'GET',
+            auth: {
+                'bearer': accessToken
+            }
+        }, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                const songDataList = JSON.parse(body).audio_features;
+                for (let i = 0; i < songDataList.length; i++) {
+                    const songData = songDataList[i];
+                    const id = songData.id;
+                    songMap[id].valence = songData.valence;
+                }
+
+                processSongList(songList, index, songMap, userID, playlistID, accessToken, finalRes);
+
+            } else {
+                finalRes.send(error);
+                console.log(error);
+                console.log(response);
+            }
+        });
+
+    }
+};
+
 console.log('Set express router');
 
 console.log('Using body parser');
