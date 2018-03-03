@@ -292,8 +292,8 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                             songMap[id].time_signature = songData.time_signature;
                             songMap[id].danceability = songData.danceability;
 
-                            songMap[id].exerciseSuitability = 80 * songData.valence + (1 - songData.liveness) * 20;
-                            songMap[id].exerciseIntensity = 40 * songData.danceability + 30 * songData.valence + 30 * songData.energy;
+                            songMap[id]['exercise-suitability'] = 80 * songData.valence + (1 - songData.liveness) * 20;
+                            songMap[id]['exercise-intensity'] = 40 * songData.danceability + 30 * songData.valence + 30 * songData.energy;
                         }
 
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
@@ -345,6 +345,85 @@ getSongList = function (songMap) {
     });
     return songList;
 };
+
+router.post('/create-playlist', function (req, finalRes) {
+    const accessToken = req.body.accessToken;
+    const userId = req.body.userId;
+    const playlistName = req.body.playlistName;
+    const targetExerciseType = req.body.exerciseType;
+
+    let startIntensity = 70;
+    let endIntensity = 100;
+    const suitabilityThreshold = 0.3;
+
+    database.ref('user-songs/' + userId)
+        .orderByChild('exercise-intensity')
+        // .startAt(suitabilityThreshold, 'exercise-suitability')
+        .startAt(startIntensity, 'exercise-intensity')
+        .endAt(endIntensity, 'exercise-intensity')
+        .once('value')
+        .then(function (snapshot) {
+            const songs = snapshot.val();
+            const songIds = Object.keys(songs);
+
+            const createPlaylistOptions = {
+                url: 'https://api.spotify.com/v1/users/' + userId + '/playlists',
+                body: JSON.stringify({
+                    'name': playlistName,
+                    'public': true
+                }),
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            request.post(createPlaylistOptions, function (error, response, body) {
+                if (!error) {
+                    const playlistId = JSON.parse(body).id;
+                    finalRes.send(playlistId);
+                    addSongsToPlaylist(songIds, 0, userId, playlistId, accessToken)
+                } else {
+                    console.log(error);
+                    finalRes.send(-1);
+                }
+            });
+        });
+});
+
+
+function addSongsToPlaylist(allSongIDs, index, userID, playlistID, accessToken, callback) {
+    if (index >= allSongIDs.length) {
+        if (callback) {
+            callback();
+        }
+        return;
+    }
+    let requestSongIDs = [];
+    const limit = index + 99;
+    while (index < Math.min(limit, allSongIDs.length)) {
+        requestSongIDs.push('spotify:track:' + allSongIDs[index]);
+        index += 1;
+    }
+
+    let populatePlaylistOptions = {
+        url: 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks',
+        body: JSON.stringify(requestSongIDs),
+        dataType: 'json',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+        }
+    };
+    request.post(populatePlaylistOptions, function (error, response, body) {
+        if (!error) {
+            addSongsToPlaylist(allSongIDs, index, userID, playlistID, accessToken);
+        } else {
+            console.log(error);
+        }
+    });
+}
 
 console.log('Set express router');
 
