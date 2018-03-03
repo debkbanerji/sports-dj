@@ -126,7 +126,7 @@ table {
 }
 
 /* -------------------- Page Styles (not required) */
-div { margin: 20px; }
+/*div { margin: 20px; }*/
 
 /* -------------------- Select Box Styles: bavotasan.com Method (with special adaptations by ericrasch.com) */
 /* -------------------- Source: http://bavotasan.com/2011/style-select-box-using-only-css/ */
@@ -174,19 +174,46 @@ div { margin: 20px; }
 }
 
 /* -------------------- Colors: Background */
-.slate   { background-color: #ddd; }
-.green   { background-color: #30842e; }
-.blue    { background-color: #3b8ec2; }
-.yellow  { background-color: #eec111; }
-.black   { background-color: #000; }
+.slate {
+    background-color: #ddd;
+}
+
+.green {
+    background-color: #30842e;
+}
+
+.blue {
+    background-color: #3b8ec2;
+}
+
+.yellow {
+    background-color: #eec111;
+}
+
+.black {
+    background-color: #000;
+}
 
 /* -------------------- Colors: Text */
-.slate select   { color: #000; }
-.green select   { color: #fff; }
-.blue select    { color: #fff; }
-.yellow select  { color: #000; }
-.black select   { color: #fff; }
+.slate select {
+    color: #000;
+}
 
+.green select {
+    color: #fff;
+}
+
+.blue select {
+    color: #fff;
+}
+
+.yellow select {
+    color: #000;
+}
+
+.black select {
+    color: #fff;
+}
 
 /* -------------------- Select Box Styles: danielneumann.com Method */
 /* -------------------- Source: http://danielneumann.com/blog/how-to-style-dropdown-with-css-only/ */
@@ -204,15 +231,14 @@ div { margin: 20px; }
 }
 
 #mainselection {
-    overflow:hidden;
-    width:350px;
+    overflow: hidden;
+    width: 350px;
     -moz-border-radius: 9px 9px 9px 9px;
     -webkit-border-radius: 9px 9px 9px 9px;
     border-radius: 9px 9px 9px 9px;
     box-shadow: 1px 1px 11px #330033;
     background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
 }
-
 
 /* -------------------- Select Box Styles: stackoverflow.com Method */
 /* -------------------- Source: http://stackoverflow.com/a/5809186 */
@@ -249,10 +275,9 @@ select#soflow-color {
 
 /* entire Create Playlist form */
 #submitPlaylistForm {
-    position: absolute;
-    left: 19%;
-    width: 1000px;
-    top: 300px;
+    /*position: absolute;*/
+    width: 100%;
+    /*top: 300px;*/
 }
 
 /* label of text on create playlist form */
@@ -272,4 +297,12 @@ select#soflow-color {
 #subbutton {
     text-align: center;
     margin: 0px;
+}
+
+#viewPlaylistButton #create-playlist-button {
+    margin-bottom: 20px; !important;
+}
+
+.btn-success {
+    /*margin-bottom: 20px;*/
 }

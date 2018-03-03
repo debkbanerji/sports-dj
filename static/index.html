@@ -65,38 +65,39 @@
     <div class="row" id="buttonsRow">
         <div id="viewPlaylistButton" class="col-sm">
             <button type="button" class="btn btn-success" id="viewButton">View Playlists</button>
+            <br>
         </div>
         <div id="createPlaylistButton" class="col-sm">
             <button type="button" class="btn btn-success" id="createButton">Create Playlist</button>
         </div>
     </div>
     <br>
+    <br>
 
 </div> <!-- end of loggedin -->
 
 <div id="submitPlaylistForm">
-    <div class="row">
-
-        <div class="form-group">
-            <label class="control-label col-sm" for="exercisetype">Exercise Type</label><br>
+    <div style="text-align:center">
+        <div class="col-xs-3" style="display: inline-block">
+            <label class="control-label col-sm" for="selected-exercise-type">Exercise Type</label><br>
             <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">
                 <option value="Strength">Strength</option>
                 <option value="Cardio">Cardio</option>
                 <option value="Yoga">Yoga</option>
             </select>
         </div>
-        <div class="form-group">
+        <div class="col-xs-3" style="display: inline-block">
             <label class="control-label col-sm" for="maxNumSongs">Number of Songs</label>
             <input type="number" class="form-control" id="maxNumSongs" placeholder="Enter Number of Songs"
                    name="maxNumSongs">
         </div>
-        <div class="form-group">
+        <div class="col-xs-3" style="display: inline-block">
             <label class="control-label col-sm" for="newPlaylistName">Playlist Name</label>
             <input type="text" class="form-control" id="newPlaylistName" placeholder="Enter Playlist Name"
                    name="newPlaylistName">
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm" for="genPlaylist">Generate Playlist!</label>
+        <div class="col-xs-3" style="display: inline-block">
+            <label class="control-label col-sm" for="create-playlist-button">Generate Playlist!</label>
             <div id="subbutton">
                 <button class="btn btn-success" id="create-playlist-button">Submit</button>
             </div>
@@ -819,6 +820,11 @@
                     var div = document.createElement('div');
                     div.setAttribute("id", "createPlaylistDiv");
                     showExerciseForm();
+
+                    let br = document.createElement('br');
+                    div.appendChild(br);
+                    br = document.createElement('br');
+                    div.appendChild(br);
 
                     let form = document.getElementById("submitPlaylistForm");
                     div.appendChild(form);
