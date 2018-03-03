@@ -1,2 +1,2 @@
-# sports-dj
-Visualizing data on music based 
+# Sports DJ
+Visualizing workout based music data

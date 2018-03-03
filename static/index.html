@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+    <title>Sports DJ</title>
+    <!--Import Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <meta property="og:title" content="Sports DJ"/>
+    <meta property="og:description"
+          content="Visualizing workout based music data"/>
+    <meta property="og:image" content="placeholder"/>
+
+    <link rel="icon" type="image/x-icon" href="assets/ico/favicon.ico?v=2">
+
+    <style type="text/css">
+        #login, #loggedin {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="page">
+<div class="container">
+    <div id="login">
+        <br>
+        <div class="container-fluid-landing"><a href="/api/login" class="text-center btn">Log in with <i
+                class="fa fa-spotify" aria-hidden="true"></i>
+            Spotify</a>
+        </div>
+    </div>
+</div>
+<div id="loggedin">
+    <div id="user-profile">
+    </div>
+    <div id="oauth">
+    </div>
+    <button hidden data-toggle="collapse" data-target="#collapse-div">Collapsible</button>
+    <div class="collapse" id="collapse-div">
+        <button hidden class=" btn btn-default" id="obtain-new-token">Obtain new token using the refresh token
+        </button>
+    </div>
+</div>
+</div>
+
+<script id="user-profile-template" type="text/x-handlebars-template">
+    <div class="page">
+
+        <div class="container-fluid text-center" id="welcome-text">
+            <!--Main Stuff Here-->
+        </div>
+    </div>
+</script>
+
+<script id="oauth-template" type="text/x-handlebars-template">
+</script>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script>
+    (function () {
+        var authResponse;
+
+        /**
+         * Obtains parameters from the hash of the URL
+         * @return Object
+         */
+        function getHashParams() {
+            var hashParams = {};
+            var e, r = /([^&;=]+)=?([^&;]*)/g,
+                q = window.location.hash.substring(1);
+            while (e = r.exec(q)) {
+                hashParams[e[1]] = decodeURIComponent(e[2]);
+            }
+            return hashParams;
+        }
+
+        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+            userProfileTemplate = Handlebars.compile(userProfileSource),
+            userProfilePlaceholder = document.getElementById('user-profile');
+        var oauthSource = document.getElementById('oauth-template').innerHTML,
+            oauthTemplate = Handlebars.compile(oauthSource),
+            oauthPlaceholder = document.getElementById('oauth');
+        var params = getHashParams();
+        var access_token = params.access_token,
+            refresh_token = params.refresh_token,
+            error = params.error;
+        let user_id;
+        let advancedModeShown = false;
+        let submitShown = false;
+        if (error) {
+            alert('There was an error during the authentication');
+        } else {
+            if (access_token) {
+                // render oauth info
+                oauthPlaceholder.innerHTML = oauthTemplate({
+                    access_token: access_token,
+                    refresh_token: refresh_token
+                });
+                $.ajax({
+                    url: 'https://api.spotify.com/v1/me',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token
+                    },
+                    success: function (response) {
+                        userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+                        authResponse = response;
+                        user_id = response.id;
+                        $('#login').hide();
+                        $('#loggedin').show();
+
+                        const id = response.id;
+
+                        // Set up listeners
+                        document.getElementById('welcome-text').innerHTML = 'Hello ' + id;
+                        getStoredUserInfo(id)
+                    }
+                });
+            } else {
+                // render initial screen
+                $('#login').show();
+                $('#loggedin').hide();
+            }
+            let obtainNewToken = function () {
+                $.ajax({
+                    url: '/api/refresh_token',
+                    data: {
+                        'refresh_token': refresh_token
+                    }
+                }).done(function (data) {
+                    access_token = data.access_token;
+                    oauthPlaceholder.innerHTML = oauthTemplate({
+                        access_token: access_token,
+                        refresh_token: refresh_token
+                    });
+                });
+            };
+            document.getElementById('obtain-new-token').addEventListener('click', obtainNewToken, false);
+
+            function toTitleCase(str) {
+                return str.replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+            }
+
+            function createElementFromHTML(htmlString) {
+                let div = document.createElement('div');
+                div.innerHTML = htmlString.trim();
+
+                // Change this to div.childNodes to support multiple top-level nodes
+                return div.firstChild;
+            }
+
+            function getStoredUserInfo(userId) {
+                $.ajax({
+                    url: '/api/stored-user-info/' + userId,
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
+        }
+    })();
+
+</script>
+</body>
+</html>
