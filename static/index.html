@@ -71,16 +71,7 @@
 
 <div id="submitPlaylistForm">
     <div class="row">
-        <!--<div class="dropdown">-->
-            <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type-->
-                <!--<span class="caret"></span></button>-->
-            <!--<ul class="dropdown-menu">-->
-                <!--<li>Strength</li>-->
-                <!--<li>Cardio</li>-->
-                <!--<li>Yoga</li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <select id="selected-exercise-type" class="semi-square blue" title="Exercise Type">
+        <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">
             <option value="Strength">Strength</option>
             <option value="Cardio">Cardio</option>
             <option value="Yoga">Yoga</option>
@@ -369,7 +360,7 @@
             //                 cell.appendChild(cellText)
             //                 newRow.appendChild(cell)
             //             }
-                        
+
             //         }
             //     }
 
@@ -382,9 +373,9 @@
             //         if (curRow == row) {
             //             for (var j = 0; j < songList.length; j++) {
             //                 var newRow = table.deleteRow(i + 1)
-                            
+
             //             }
-                        
+
             //         }
             //     }
 
@@ -425,6 +416,9 @@
                         }
                         document.getElementById("viewButton").className = 'btn btn-success disabled';
                         document.getElementById("createButton").className = 'btn btn-success';
+
+                        document.getElementById('maxNumSongs').value = null;
+                        document.getElementById('newPlaylistName').value = null;
                     })
                 });
             }
