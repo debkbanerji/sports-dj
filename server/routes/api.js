@@ -158,6 +158,17 @@ shuffle = function (a) {
     return a; // Note: This is an in place shuffle, so a return statement is not necessary
 };
 
+function getRandomSubarray(arr, size) {
+    let shuffled = arr.slice(0), i = arr.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(0, size);
+}
+
 router.get('/stored-user-info/:id', function (req, res) {
     const id = req.params.id;
     database.ref('/user-profiles/' + id).once('value').then(function (snapshot) {
@@ -378,11 +389,12 @@ router.post('/create-playlist', function (req, finalRes) {
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
-        .limitToFirst(maxSongs)
+        .limitToFirst(maxSongs * 2)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
             let songObjects = Object.values(songs);
+            songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
                 return a['exercise-intensity'] - b['exercise-intensity'];
             });
