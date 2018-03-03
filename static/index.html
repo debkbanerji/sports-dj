@@ -561,7 +561,7 @@
                 });
             }
 
-            function createPlaylist(userId, playlistName, exerciseType, callback) {
+            function createPlaylist(userId, playlistName, exerciseType, maxSongs, callback) {
                 $.ajax({
                     type: "POST",
                     url: '/api/create-playlist/',
@@ -569,7 +569,8 @@
                         'accessToken': accessToken,
                         'userId': userId,
                         'playlistName': playlistName,
-                        'exerciseType': exerciseType
+                        'exerciseType': exerciseType,
+                        'maxSongs': maxSongs
                     },
                     success: function (response) {
                         if (callback) {

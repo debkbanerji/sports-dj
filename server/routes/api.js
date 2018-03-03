@@ -356,9 +356,10 @@ router.post('/create-playlist', function (req, finalRes) {
     const accessToken = req.body.accessToken;
     const userId = req.body.userId;
     const playlistName = req.body.playlistName;
+    const maxSongs = Number(req.body.maxSongs);
     const targetExerciseType = req.body.exerciseType;
 
-    let startIntensity = 70;
+    let startIntensity = 20;
     let endIntensity = 100;
     const suitabilityThreshold = 0.3;
 
@@ -367,7 +368,7 @@ router.post('/create-playlist', function (req, finalRes) {
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
-        .limitToFirst(200)
+        .limitToFirst(maxSongs)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
