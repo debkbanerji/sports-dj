@@ -275,6 +275,7 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                         for (let i = 0; i < songDataList.length; i++) {
                             const songData = songDataList[i];
                             const id = songData.id;
+                            songMap[id].index = i + index;
                             songMap[id].valence = songData.valence;
                             songMap[id].tempo = songData.tempo;
                             songMap[id].energy = songData.energy;
@@ -314,14 +315,25 @@ router.get('/playlist-info/:userID/:playlistID', function (req, res) {
             const songMap = {};
             processSongList(0, songMap, userID, playlistID, accessToken, null, function () {
                 database.ref('/user-playlists/' + userID + '/' + playlistID).once('value').then(function (snapshot) {
-                    res.send(snapshot.val());
+                    res.send(getSongList(snapshot.val()));
                 });
             });
         } else {
-            res.send(snapshot.val());
+            res.send(getSongList(snapshot.val()));
         }
     });
 });
+
+getSongList = function(songMap) {
+    if (!songMap) {
+        return false;
+    }
+    let songList = Object.values(songMap);
+    songList = songList.sort(function(a, b){
+        return a.index - b.index;
+    });
+    return songList;
+};
 
 console.log('Set express router');
 
