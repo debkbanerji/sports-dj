@@ -100,6 +100,7 @@
         let user_id;
         let advancedModeShown = false;
         let submitShown = false;
+        var playlistData;
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -191,13 +192,6 @@
                         div.setAttribute("id", 'graphsDiv')
                         body.appendChild(div);
 
-                        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        svg.setAttribute('style', 'border: 1px grey');
-                        svg.setAttribute('width', '1080');
-                        svg.setAttribute('height', '2000');
-
-                        div.appendChild(svg);
-
                         var tbl = document.createElement('table');
 
                         div.appendChild(tbl);
@@ -230,6 +224,10 @@
 
                             tblBody.appendChild(row);
                             row.addEventListener('click', function() {
+                                if (document.getElementById('graphSVG') != null) {
+                                    var pSVG = document.getElementById('graphSVG');
+                                    pSVG.parentNode.removeChild(pSVG);
+                                }
                                 displayPlaylistData(this);
                             })
                         }
@@ -288,12 +286,18 @@
                 // div.setAttribute("id", 'graphsDiv')
                 // body.appendChild(div);
 
-                // var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                // svg.setAttribute('style', 'border: 1px grey');
-                // svg.setAttribute('width', '1080');
-                // svg.setAttribute('height', '2000');
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('style', 'border: 1px grey');
+                svg.setAttribute('width', '1080');
+                svg.setAttribute('height', '2000');
+                svg.setAttribute('id', 'graphSVG');
+
+                var div = document.getElementById('graphsDiv');
+
+                div.appendChild(svg)
 
                 // div.appendChild(svg);
+                // 
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
                         if (error) throw error;
@@ -301,6 +305,8 @@
                         console.log(data)
 
                         var dataV = Object.values(data)
+
+                        playlistData = dataV;
 
                         var svgD3 = d3.select('svg');
 
