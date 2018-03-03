@@ -235,6 +235,7 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
             if (responseObject.total === index) {
                 delete songMap[null];
                 database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
+                database.ref('user-songs/' + userID).update(songMap);
                 if (callback) {
                     callback()
                 } else {
