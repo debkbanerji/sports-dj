@@ -358,15 +358,9 @@
                         .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
                         .range([400,0]);
 
-                    var yscale3 = d3.scaleLinear()
-                        .domain([0, d3.max(dataV, function(d) {return d['exercise-intensity'];})])
-                        .range([400, 0])
-
                     var yAxis1 = d3.axisLeft(yscale1).ticks(11);
 
                     var yAxis2 = d3.axisLeft(yscale2).ticks(11);
-
-                    var yAxis3 = d3.axisLeft(yscale3).ticks(11);
 
                     var xAxis = d3.axisBottom(xscale).ticks(songNames.length).tickFormat("");
 
@@ -388,7 +382,7 @@
 
                     var danceLine = d3.line()
                         .x(function (d, i) {
-                            return xscale(i) + 30;
+                            return xscale(i) + 50;
                         })
                         .y(function (d) {
                             return yscale1(d.danceability);
@@ -396,7 +390,7 @@
 
                     var valenceLine = d3.line()
                         .x(function (d, i) {
-                            return xscale(i) + 30;
+                            return xscale(i) + 50;
                         })
                         .y(function (d) {
                             return yscale1(d.valence);
@@ -404,7 +398,7 @@
 
                     var energyLine = d3.line()
                         .x(function (d, i) {
-                            return xscale(i) + 30;
+                            return xscale(i) + 50;
                         })
                         .y(function (d) {
                             return yscale1(d.energy);
@@ -412,7 +406,7 @@
 
                     var tempoLine = d3.line()
                         .x(function (d, i) {
-                            return xscale(i) + 30;
+                            return xscale(i) + 50;
                         })
                         .y(function (d) {
                             return yscale2(d.tempo);
@@ -420,7 +414,7 @@
 
                     var intensityLine = d3.line()
                         .x(function (d, i) {
-                            return xscale(i) + 30;
+                            return xscale(i) + 50;
                         })
                         .y(function (d) {
                             return yscale2(d['exercise-intensity']);
@@ -431,7 +425,7 @@
                         .attr("class", "line")
                         .attr('stroke', 'white')
                         .attr('fill', 'none')
-                        .attr('transform', 'translate(0, 10)')
+                        .attr('transform', 'translate(0, 30)')
                         .attr("d", danceLine);
 
                     svgD3.append("path")
@@ -439,7 +433,7 @@
                         .attr("class", "line")
                         .attr('stroke', '#30842e')
                         .attr('fill', 'none')
-                        .attr('transform', 'translate(0, 10)')
+                        .attr('transform', 'translate(0, 30)')
                         .attr("d", valenceLine);
 
                     svgD3.append("path")
@@ -447,7 +441,7 @@
                         .attr("class", "line")
                         .attr('stroke', '#82D7E8')
                         .attr('fill', 'none')
-                        .attr('transform', 'translate(0, 10)')
+                        .attr('transform', 'translate(0, 30)')
                         .attr("d", energyLine);
 
                     svgD3.append("path")
@@ -455,7 +449,7 @@
                         .attr("class", "line")
                         .attr('stroke', 'red')
                         .attr('fill', 'none')
-                        .attr('transform', 'translate(0, 450)')
+                        .attr('transform', 'translate(0, 500)')
                         .attr("d", tempoLine);
 
                     svgD3.append("path")
@@ -463,33 +457,57 @@
                         .attr("class", "line")
                         .attr('stroke', 'blue')
                         .attr('fill', 'none')
-                        .attr('transform', 'translate(0, 450)')
+                        .attr('transform', 'translate(0, 500)')
                         .attr("d", intensityLine);
 
                     svgD3.append('g')
                         .attr('class', 'yaxis')
-                        .attr('transform', 'translate(30, 10)')
+                        .attr('transform', 'translate(50, 30)')
                         .style('stroke', 'white')
                         .call(yAxis1);
 
 
                     svgD3.append('g')
                         .attr('class', 'yaxis')
-                        .attr('transform', 'translate(30, 450)')
+                        .attr('transform', 'translate(50, 500)')
                         .attr('stroke', 'white')
-                        .call(yAxis3);
+                        .call(yAxis2);
 
                     svgD3.append('g')
                         .attr('class', 'xaxis')
-                        .attr('transform', 'translate(30, 410)')
+                        .attr('transform', 'translate(50, 430)')
                         .attr('stroke', 'white')
                         .call(xAxis);
 
                     svgD3.append('g')
                         .attr('class', 'xaxis')
-                        .attr('transform', 'translate(30, 850)')
+                        .attr('transform', 'translate(50, 900)')
                         .attr('stroke', 'white')
                         .call(xAxis);
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(20,215)rotate(-90)')
+                        .text('Danceability, Valence, and Energy')
+
+                    svgD3.append('text')
+                        .attr('class', 'title')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(550,20)')
+                        .text('Danceability, Valence, and Energy By Song')
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(20,695)rotate(-90)')
+                        .text('Tempo and Intensity')
+
+                    svgD3.append('text')
+                        .attr('class', 'title')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(550,490)')
+                        .text('Tempo and Intensity By Song')
 
                 })
             }
