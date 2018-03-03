@@ -29,7 +29,6 @@ table {
 #viewPlaylistDiv {
     centers the playlist div
     position: absolute;
-<<<<<<< HEAD
     left: 50%;
     margin-left: -100px;
 } */
@@ -37,7 +36,6 @@ table {
 .yaxis line {
     stroke: white;
 }
-=======
     left: 10%;
 }
 
@@ -64,4 +62,3 @@ table {
 #blurb {
     color: #FFFFFF;
 }
->>>>>>> a6fe59190a8874733fcd2e7e876a867d71027468
