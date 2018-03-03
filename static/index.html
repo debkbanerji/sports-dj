@@ -23,13 +23,12 @@
             display: none;
         }
     </style>
-    <div>
-        <center><img src="assets/png/sportsdj.png"></center>
-    </div>
-
 </head>
 
 <body class="page">
+<div>
+    <center><img src="assets/png/sportsdj.png"></center>
+</div>
 <div class="container">
     <div id="login">
         <br>
@@ -73,21 +72,22 @@
     <div class="row">
 
         <div class="form-group">
-        <label class="control-label col-sm" for="exercisetype">Exercise Type</label><br>
-        <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">            <option value="Strength">Strength</option>
-            <option value="Cardio">Cardio</option>
-            <option value="Yoga">Yoga</option>
-        </select>
+            <label class="control-label col-sm" for="exercisetype">Exercise Type</label><br>
+            <select id="selected-exercise-type" class="semi-square green" title="Exercise Type">
+                <option value="Strength">Strength</option>
+                <option value="Cardio">Cardio</option>
+                <option value="Yoga">Yoga</option>
+            </select>
         </div>
         <div class="form-group">
             <label class="control-label col-sm" for="maxNumSongs">Number of Songs</label>
-                <input type="number" class="form-control" id="maxNumSongs" placeholder="Enter Number of Songs"
-                       name="maxNumSongs">
+            <input type="number" class="form-control" id="maxNumSongs" placeholder="Enter Number of Songs"
+                   name="maxNumSongs">
         </div>
         <div class="form-group">
             <label class="control-label col-sm" for="newPlaylistName">Playlist Name</label>
-                <input type="text" class="form-control" id="newPlaylistName" placeholder="Enter Playlist Name"
-                       name="newPlaylistName">
+            <input type="text" class="form-control" id="newPlaylistName" placeholder="Enter Playlist Name"
+                   name="newPlaylistName">
         </div>
         <div class="form-group">
             <label class="control-label col-sm" for="genPlaylist">Generate Playlist!</label>
@@ -462,17 +462,27 @@
                     var svgD3 = d3.select('svg');
 
                     var exTypes = d3.nest()
-                        .key(function(d) {return d['exercise-type'];})
-                        .rollup(function(values) {return d3.sum(values, function() {return 1;})})
+                        .key(function (d) {
+                            return d['exercise-type'];
+                        })
+                        .rollup(function (values) {
+                            return d3.sum(values, function () {
+                                return 1;
+                            })
+                        })
                         .entries(dataV);
 
                     var barYscale = d3.scaleLinear()
-                        .domain([0,d3.max(exTypes, function(d) {return d.value;})])
-                        .range([400,0])
+                        .domain([0, d3.max(exTypes, function (d) {
+                            return d.value;
+                        })])
+                        .range([400, 0])
 
                     var barXscale = d3.scaleOrdinal()
-                        .domain(data.map(function(d) {return d['exercise-type'];}))
-                        .range([75,235, 395])
+                        .domain(data.map(function (d) {
+                            return d['exercise-type'];
+                        }))
+                        .range([75, 235, 395])
 
                     var barXaxis = d3.axisBottom(barXscale).ticks(3);
 
@@ -512,7 +522,7 @@
                         .data(exTypes)
                         .enter()
                         .append('rect')
-                        .attr('fill', function(d) {
+                        .attr('fill', function (d) {
                             if (d.key == 'Cardio') {
                                 return '#30842e';
                             } else if (d.key == 'Yoga') {
@@ -520,9 +530,13 @@
                             }
                             return 'white';
                         })
-                        .attr('transform', function(d, i) {return 'translate(' + (75 + i*160) + ',' + (950+ barYscale(d.value)) + ')';})
+                        .attr('transform', function (d, i) {
+                            return 'translate(' + (75 + i * 160) + ',' + (950 + barYscale(d.value)) + ')';
+                        })
                         .attr('width', 100)
-                        .attr('height', function(d) {return 400-barYscale(d.value);})
+                        .attr('height', function (d) {
+                            return 400 - barYscale(d.value);
+                        })
 
 
                     var maxDance = d3.max(dataV, function (d) {
@@ -556,6 +570,9 @@
                     var xscale = d3.scaleLinear()
                         .domain([0, songNames.length])
                         .range([0, 1000])
+                    console.log('maxtempo:', maxTempo)
+                    console.log('maxint: ', maxIntensity)
+                    console.log(d3.max([maxTempo, maxIntensity]))
 
                     var yscale2 = d3.scaleLinear()
                         .domain([0, d3.max([maxTempo, maxIntensity])])
@@ -571,11 +588,11 @@
                         .domain([0, songNames.length])
                         .range([0, 1000])
 
-                    var yscale2 = d3.scaleLinear()
-                        .domain([0, d3.max(dataV, function (d) {
-                            return d.tempo;
-                        })])
-                        .range([400, 0]);
+                    // var yscale2 = d3.scaleLinear()
+                    //     .domain([0, d3.max(dataV, function (d) {
+                    //         return d.tempo;
+                    //     })])
+                    //     .range([400, 0]);
 
                     var yAxis1 = d3.axisLeft(yscale1).ticks(11);
 
