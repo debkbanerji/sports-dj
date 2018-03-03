@@ -171,6 +171,19 @@
                 });
             }
 
+            function setStoredUserInfo(data, callback) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/stored-user-info/' + userId,
+                    data: data,
+                    success: function (response) {
+                        if (callback) {
+                            callback(response)
+                        }
+                    }
+                });
+            }
+
             function getUserPlaylists() {
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,

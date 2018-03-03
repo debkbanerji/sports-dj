@@ -166,6 +166,13 @@ router.get('/stored-user-info/:id', function (req, res) {
     });
 });
 
+router.post('/stored-user-info/:id', function (req, res) {
+    const id = req.params.id;
+    database.ref('/user-profiles/' + id).set(req.body).then(function () {
+        res.send(true);
+    });
+});
+
 router.get('/playlist-list/:userID', function (req, res) {
     const userId = req.params.userID;
     const accessToken = req.query.accessToken;
