@@ -77,11 +77,11 @@ table {
 }
 
 .tableRow:hover {
-    background-color: #82d7e8 /* blue */
+    color: #82d7e8 /* blue */
 }
 
 .selectedRow {
-    background-color: #82d7e8 /* blue */
+    color: #82d7e8 /* blue */
 }
 
 .fa-spotify:before {
