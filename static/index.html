@@ -146,6 +146,7 @@
         let submitShown = false;
         var selectedRow;
         var showSongs = true;
+
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -340,38 +341,38 @@
                 });
             }
 
-            function addTableRows(row, songList) {
-                var table = document.getElementById('playlistTable')
-                for (var i = 0; i < table.rows.length; i++) {
-                    var curRow = table.rows[i]
-                    if (curRow == row) {
-                        for (var j = 0; j < songList.length; j++) {
-                            var newRow = table.insertRow(i + j + 1)
-                            var cell = document.createElement("td");
-                            var cellText = document.createTextNode("-- " + songList[j]["name"]);
-                            cell.appendChild(cellText)
-                            newRow.appendChild(cell)
-                        }
+            // function addTableRows(row, songList) {
+            //     var table = document.getElementById('playlistTable')
+            //     for (var i = 0; i < table.rows.length; i++) {
+            //         var curRow = table.rows[i]
+            //         if (curRow == row) {
+            //             for (var j = 0; j < songList.length; j++) {
+            //                 var newRow = table.insertRow(i + j + 1)
+            //                 var cell = document.createElement("td");
+            //                 var cellText = document.createTextNode("-- " + songList[j]["name"]);
+            //                 cell.appendChild(cellText)
+            //                 newRow.appendChild(cell)
+            //             }
                         
-                    }
-                }
+            //         }
+            //     }
 
-            }
+            // }
 
-            function deleteTableRows(row, songList) {
-                var table = document.getElementById('playlistTable')
-                for (var i = 0; i < table.rows.length; i++) {
-                    var curRow = table.rows[i]
-                    if (curRow == row) {
-                        for (var j = 0; j < songList.length; j++) {
-                            var newRow = table.deleteRow(i + 1)
+            // function deleteTableRows(row, songList) {
+            //     var table = document.getElementById('playlistTable')
+            //     for (var i = 0; i < table.rows.length; i++) {
+            //         var curRow = table.rows[i]
+            //         if (curRow == row) {
+            //             for (var j = 0; j < songList.length; j++) {
+            //                 var newRow = table.deleteRow(i + 1)
                             
-                        }
+            //             }
                         
-                    }
-                }
+            //         }
+            //     }
 
-            }
+            // }
 
             // when select View Playlists
             function setGetUserPlaylistsListener() {
@@ -413,11 +414,11 @@
 
                     var dataV = Object.values(data)
 
-                    if (showSongs) {
-                        addTableRows(element, dataV)
-                    } else {
-                        deleteTableRows(element, dataV)
-                    }
+                    // if (showSongs) {
+                    //     addTableRows(element, dataV)
+                    // } else {
+                    //     deleteTableRows(element, dataV)
+                    // }
 
                     console.log(dataV)
 
