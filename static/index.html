@@ -542,6 +542,14 @@
                         return d.energy;
                     })
 
+                    var maxTempo = d3.max(dataV, function (d) {
+                        return d.tempo;
+                    })
+
+                    var maxIntensity = d3.max(dataV, function (d) {
+                        return d['exercise-intensity'];
+                    })
+
                     var yscale1 = d3.scaleLinear()
                         .domain([0, d3.max([maxDance, maxValence, maxEnergy])])
                         .range([400, 0]);
@@ -555,9 +563,7 @@
                         .range([0, 1000])
 
                     var yscale2 = d3.scaleLinear()
-                        .domain([0, d3.max(dataV, function (d) {
-                            return d.tempo;
-                        })])
+                        .domain([0, d3.max([maxTempo, maxIntensity])])
                         .range([400, 0]);
 
                     var yAxis1 = d3.axisLeft(yscale1).ticks(11);
