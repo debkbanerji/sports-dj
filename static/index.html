@@ -118,6 +118,7 @@
                         // Set up listeners
                         console.log('Hello ' + userId);
                         getStoredUserInfo()
+                        setGetUserPlaylistsListener();
                     }
                 });
             } else {
@@ -159,7 +160,7 @@
                 $.ajax({
                     url: '/api/stored-user-info/' + userId,
                     success: function (response) {
-                        console.log(response)
+                        console.log(response);
                     }
                 });
             }
@@ -168,9 +169,15 @@
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
-                        console.log(response)
+                        console.log(response);
                     }
                 });
+            }
+
+            function setGetUserPlaylistsListener() {
+                document.getElementById("viewPlaylistButton").addEventListener("click", function() {
+                    getUserPlaylists();
+                })
             }
         }
     })();
