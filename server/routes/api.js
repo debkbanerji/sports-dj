@@ -169,10 +169,21 @@ function getRandomSubarray(arr, size) {
     return shuffled.slice(0, size);
 }
 
-function upthenDown(arr, upRatio) {
+function upThenDown(arr, upRatio) {
     let start = 0;
     let end = arr.length - 1;
     let result = [];
+    for (let i = 0; i < arr.length; i++) {
+        result.push(i);
+    }
+    for (let i = 0; i < arr.length; i++) {
+        if (i % upRatio === 0) {
+            result[end--] = arr[i];
+        } else {
+            result[start++] = arr[i];
+        }
+    }
+    return result;
 }
 
 router.get('/stored-user-info/:id', function (req, res) {
@@ -368,15 +379,16 @@ getSongList = function (songMap) {
     songList = songList.sort(function (a, b) {
         return a.index - b.index;
     });
+    songList = upThenDown(songList, 7);
 
-    for (var i = 0; i< songList.length; i++) {
-        var exType = ""
-        var intensity = songList[i]['exercise-intensity']
+    for (var i = 0; i < songList.length; i++) {
+        var exType = "";
+        var intensity = songList[i]['exercise-intensity'];
         if (intensity >= 150) {
             exType = "Strength"
         } else if (intensity >= 75) {
             exType = 'Cardio'
-        } else{
+        } else {
             exType = 'Yoga'
         }
         songList[i]['exercise-type'] = exType
@@ -410,15 +422,16 @@ router.post('/create-playlist', function (req, finalRes) {
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
-        .limitToFirst(maxSongs * 2)
+        .limitToFirst(maxSongs * 10)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
             let songObjects = Object.values(songs);
             songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
+                return (a['exercise-intensity'] * 0.85 + a['tempo'] * 0.15) - (b['exercise-intensity'] * 0.85 + b['tempo'] * 0.15);
                 // return (a['exercise-intensity'] + a['tempo']) - (b['exercise-intensity'] + b['tempo']);
-                return (a['exercise-intensity']) - (b['exercise-intensity']);
+                // return (a['exercise-intensity']) - (b['exercise-intensity']);
             });
             const songIds = [];
             for (let j = 0; j < songObjects.length; j++) {
