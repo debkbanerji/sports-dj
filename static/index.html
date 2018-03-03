@@ -187,6 +187,17 @@
                         div.setAttribute("class", "col-sm");
                         newRow.appendChild(div);
                         // TODO: create other column and add as child to newRow
+                        
+                        var div = document.createElement("div");
+                        div.setAttribute("id", 'graphsDiv')
+                        body.appendChild(div);
+
+                        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svg.setAttribute('style', 'border: 1px grey');
+                        svg.setAttribute('width', '1080');
+                        svg.setAttribute('height', '2000');
+
+                        div.appendChild(svg);
 
                         var tbl = document.createElement('table');
 
@@ -273,17 +284,17 @@
 
                 // });
 
-                var body = document.getElementsByTagName("body")[0];
-                var div = document.createElement("div");
-                div.setAttribute("id", 'graphsDiv')
-                body.appendChild(div);
+                //var body = document.getElementsByTagName("body")[0];
+                // var div = document.createElement("div");
+                // div.setAttribute("id", 'graphsDiv')
+                // body.appendChild(div);
 
-                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute('style', 'border: 1px grey');
-                svg.setAttribute('width', '400');
-                svg.setAttribute('height', '400');
+                // var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                // svg.setAttribute('style', 'border: 1px grey');
+                // svg.setAttribute('width', '1080');
+                // svg.setAttribute('height', '2000');
 
-                div.appendChild(svg);
+                // div.appendChild(svg);
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
                         if (error) throw error;
@@ -298,37 +309,53 @@
 
                         var maxValence = d3.max(dataV, function(d) {return d.valence;})
 
-                        var yscale = d3.scaleLinear()
-                            .domain([0,maxDance])
-                            .range([200,0]);
+                        var maxEnergy = d3.max(dataV, function(d) {return d.energy;})
+
+                        var minEnergy = d3.min(dataV, function(d) {return d.energy;})
+                        console.log(minEnergy)
+
+                        var yscale1 = d3.scaleLinear()
+                            .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
+                            .range([400,0]);
 
                         var songNames = dataV.map(function(d) {return d.name;})
 
                         var xscale = d3.scaleLinear()
                             .domain([0, songNames.length])
-                            .range([0, songNames.length * 5])
+                            .range([0, 1000])
 
-                        var yAxis = d3.axisLeft(yscale).ticks(10);
+                        var yscale2 = d3.scaleLinear()
+                            .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
+                            .range([400,0]);
+
+                        var yAxis1 = d3.axisLeft(yscale1).ticks(11);
+
+                        var yAxis2 = d3.axisLeft(yscale2).ticks(11);
 
                         var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
 
                         var danceLine = d3.line()
-                            .x(function(d, i) {return i*5 + 30;})
-                            .y(function(d) {return yscale(d.danceability);});
+                            .x(function(d, i) {return xscale(i) + 30;})
+                            .y(function(d) {return yscale1(d.danceability);});
 
                         var valenceLine = d3.line()
-                            .x(function(d, i) {return i*5 + 30;})
-                            .y(function(d) {return yscale(d.valence);});
+                            .x(function(d, i) {return xscale(i) + 30;})
+                            .y(function(d) {return yscale1(d.valence);});
 
                         var energyLine = d3.line()
-                            .x(function(d, i) {return i*5 + 30;})
-                            .y(function(d) {return yscale(d.energy);});
+                            .x(function(d, i) {return xscale(i) + 30;})
+                            .y(function(d) {return yscale1(d.energy);});
+
+                        var tempoLine = d3.line()
+                            .x(function(d, i) {return xscale(i) + 30;})
+                            .y(function(d) {return yscale2(d.tempo);});
 
                         svgD3.append("path")
                           .data([dataV])
                           .attr("class", "line")
                           .attr('stroke', 'white')
                           .attr('fill', 'none')
+                          .attr('transform', 'translate(0, 10)')
                           .attr("d", danceLine);
 
                         svgD3.append("path")
@@ -336,6 +363,7 @@
                           .attr("class", "line")
                           .attr('stroke', '#30842e')
                           .attr('fill', 'none')
+                          .attr('transform', 'translate(0, 10)')
                           .attr("d", valenceLine);
 
                         svgD3.append("path")
@@ -343,17 +371,38 @@
                           .attr("class", "line")
                           .attr('stroke', '#82D7E8')
                           .attr('fill', 'none')
+                          .attr('transform', 'translate(0, 10)')
                           .attr("d", energyLine);
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', 'red')
+                          .attr('fill', 'none')
+                          .attr('transform', 'translate(0, 450)')
+                          .attr("d", tempoLine);
 
                         svgD3.append('g')
                             .attr('class', 'yaxis')
                             .attr('transform', 'translate(30, 10)')
                             .attr('stroke', 'white')
-                            .call(yAxis);
+                            .call(yAxis1);
+
+                        svgD3.append('g')
+                            .attr('class', 'yaxis')
+                            .attr('transform', 'translate(30, 450)')
+                            .attr('stroke', 'white')
+                            .call(yAxis2);
 
                         svgD3.append('g')
                             .attr('class', 'xaxis')
-                            .attr('transform', 'translate(30, 210)')
+                            .attr('transform', 'translate(30, 410)')
+                            .attr('stroke', 'white')
+                            .call(xAxis);
+
+                        svgD3.append('g')
+                            .attr('class', 'xaxis')
+                            .attr('transform', 'translate(30, 860)')
                             .attr('stroke', 'white')
                             .call(xAxis);
 
