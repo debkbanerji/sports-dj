@@ -447,6 +447,11 @@
 
                 var div = document.getElementById('graphsDiv');
 
+                if (document.getElementById('summaryTable') != null) {
+                    var t = document.getElementById('summaryTable')
+                    t.parentNode.removeChild(t)
+                }
+
                 var tbl = document.createElement('table');
                 tbl.setAttribute('id', 'summaryTable');
 
@@ -463,11 +468,9 @@
                     if (error) throw error;
 
                     var dataV = Object.values(data)
-                    console.log(dataV)
 
                     var totCal = getTotalCalories(dataV)
                     var avgs = getAverages(dataV)
-                    console.log(avgs)
 
                     var summaryRow = document.createElement("tr");
                     var summaryCell = document.createElement("td");
@@ -637,9 +640,7 @@
                     var xscale = d3.scaleLinear()
                         .domain([0, songNames.length])
                         .range([0, 1000])
-                    console.log('maxtempo:', maxTempo)
-                    console.log('maxint: ', maxIntensity)
-                    console.log(d3.max([maxTempo, maxIntensity]))
+
 
                     var yscale2 = d3.scaleLinear()
                         .domain([0, d3.max([maxTempo, maxIntensity])])
@@ -913,7 +914,6 @@
                         'playlistID': playlistId
                     },
                     success: function (response) {
-                        console.log(response)
                     }
                 });
             }
