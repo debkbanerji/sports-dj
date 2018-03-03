@@ -369,14 +369,14 @@ getSongList = function (songMap) {
         return a.index - b.index;
     });
 
-    for (var i = 0; i< songList.length; i++) {
+    for (var i = 0; i < songList.length; i++) {
         var exType = ""
         var intensity = songList[i]['exercise-intensity']
         if (intensity >= 150) {
             exType = "Strength"
         } else if (intensity >= 75) {
             exType = 'Cardio'
-        } else{
+        } else {
             exType = 'Yoga'
         }
         songList[i]['exercise-type'] = exType
@@ -410,15 +410,16 @@ router.post('/create-playlist', function (req, finalRes) {
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
-        .limitToFirst(maxSongs * 2)
+        .limitToFirst(maxSongs * 10)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
             let songObjects = Object.values(songs);
             songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
+                return (a['exercise-intensity'] * 0.85 + a['tempo'] * 0.15) - (b['exercise-intensity'] * 0.85 + b['tempo'] * 0.15);
                 // return (a['exercise-intensity'] + a['tempo']) - (b['exercise-intensity'] + b['tempo']);
-                return (a['exercise-intensity']) - (b['exercise-intensity']);
+                // return (a['exercise-intensity']) - (b['exercise-intensity']);
             });
             const songIds = [];
             for (let j = 0; j < songObjects.length; j++) {
