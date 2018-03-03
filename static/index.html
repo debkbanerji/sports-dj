@@ -189,8 +189,14 @@
                             var cell = document.createElement("td");
                             var cellText = document.createTextNode(response[i]["name"]);
 
+                            var cell2 = document.createElement("td");
+                            var id = document.createTextNode(response[i]["id"]);
+
                             cell.appendChild(cellText);
+                            cell2.appendChild(id);
+                            cell2.setAttribute('hidden', 'true');
                             row.appendChild(cell);
+                            row.appendChild(cell2);
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
@@ -221,7 +227,7 @@
             }
 
             function displayPlaylistData(element) {
-                console.log(element.cells[0].innerHTML);
+                console.log(element.cells[1].innerHTML);
             }
 
 
