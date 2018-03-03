@@ -215,18 +215,11 @@ router.post('/refresh-playlist-info/', function (req, res) {
 
 refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
     const songMap = {};
-    // const songList = [];
     processSongList(0, songMap, userID, playlistID, accessToken, finalRes);
 };
 
 // Updates the song map with the necessary information and uploads it to firebase once all songs have been processed
 processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes) {
-
-    // if (index >= songList.length) {
-    //     database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
-    //     finalRes.send(true);
-    // } else {
-
     const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks?offset=' + index;
 
     request({
@@ -295,46 +288,6 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
             console.log(response);
         }
     });
-    // }
-
-    // if (index >= songList.length) {
-    //     database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
-    //     finalRes.send(true);
-    // } else {
-    //     // IDs of songs who's song information we're retrieving
-    //     const querySongIDs = [];
-    //     while (index < songList.length && querySongIDs.length < 99) {
-    //         let song = songList[index++];
-    //         querySongIDs.push(song.id);
-    //     }
-    //
-    //     const requestURL = 'https://api.spotify.com/v1/audio-features?ids=' + querySongIDs.join(',');
-    //
-    //     request({
-    //         url: requestURL,
-    //         method: 'GET',
-    //         auth: {
-    //             'bearer': accessToken
-    //         }
-    //     }, function (error, response, body) {
-    //         if (!error && response.statusCode === 200) {
-    //             const songDataList = JSON.parse(body).audio_features;
-    //             for (let i = 0; i < songDataList.length; i++) {
-    //                 const songData = songDataList[i];
-    //                 const id = songData.id;
-    //                 songMap[id].valence = songData.valence;
-    //             }
-    //
-    //             processSongList(songList, index, songMap, userID, playlistID, accessToken, finalRes);
-    //
-    //         } else {
-    //             finalRes.send(error);
-    //             console.log(error);
-    //             console.log(response);
-    //         }
-    //     });
-    //
-    // }
 };
 
 console.log('Set express router');
