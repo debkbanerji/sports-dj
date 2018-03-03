@@ -1,5 +1,5 @@
 body {
-    background: #303030;
+    background: #32363d;
     background-size: cover;
 }
 
@@ -17,4 +17,9 @@ table {
     border-style: hidden;
     padding: 15px;
     border-bottom-color: transparent;
+}
+
+.button:hover {
+    background-color: #30842e /* Darker green */
+    color: white;
 }

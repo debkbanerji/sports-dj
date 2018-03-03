@@ -55,6 +55,10 @@
             </div>
     </div>
 
+    <!-- <div id="backButton" class="col-sm">
+        <button type="button" class="btn btn-success">Return</button>
+    </div> -->
+
 </div>
 </div>
 
@@ -162,7 +166,6 @@
                         console.log(response);
                     }
                 });
-                refreshPlaylistInfo('spotify', '37i9dQZF1DX3FNkD0kDpDV');
             }
 
             function getUserPlaylists() {
@@ -178,6 +181,8 @@
                         div.setAttribute("id", "playlistDiv")
 
                         var tbl = document.createElement('table');
+
+                        div.appendChild(tbl);
 
                         tbl.setAttribute('class', 'playlistTable');
 
