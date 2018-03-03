@@ -188,7 +188,8 @@ router.get('/playlist-list/:userID', function (req, res) {
                 if (playlist.public) {
                     let playlistObject = {
                         'name': playlist.name,
-                        'id': playlist.id
+                        'id': playlist.id,
+                        'ownerId': playlist.owner.id
                     };
                     if (playlist.images && playlist.images.length > 1) {
                         playlistObject.thumbnailURL = playlist.images[1].url;
