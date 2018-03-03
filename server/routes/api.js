@@ -170,9 +170,6 @@ router.get('/playlist-list/:userID', function (req, res) {
     const userId = req.params.userID;
     const accessToken = req.query.accessToken;
 
-    console.log(userId);
-    console.log(accessToken);
-
     const requestURL = 'https://api.spotify.com/v1/users/' + userId + '/playlists';
 
     request({
