@@ -115,8 +115,9 @@
 
                         // Set up listeners
                         console.log('Hello ' + userId);
-                        getStoredUserInfo()
+                        getStoredUserInfo();
                         setGetUserPlaylistsListener();
+                        //tableRowListener();
                     }
                 });
             } else {
@@ -172,7 +173,9 @@
                         var body = document.getElementsByTagName("body")[0];
 
                         var tbl = document.createElement('table');
+
                         tbl.setAttribute('class', 'playlistTable');
+
                         var tblBody = document.createElement('tbody');
 
                         for (var i = 0; i < response.length; i++) {
@@ -183,8 +186,12 @@
 
                             cell.appendChild(cellText);
                             row.appendChild(cell);
+                            row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
+                            row.addEventListener('dblclick', function() {
+                                displayPlaylistData(this);
+                            })
                         }
 
                         // put the <tbody> in the <table>
@@ -203,6 +210,11 @@
                     document.getElementById("buttonsRow").style.display = "none";
                 })
             }
+
+            function displayPlaylistData(element) {
+                console.log(element.cells[0].innerHTML);
+            }
+
 
             function refreshPlaylistInfo(playlistID) {
                 $.ajax({
