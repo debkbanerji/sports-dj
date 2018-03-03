@@ -66,6 +66,10 @@ table {
     background-color: #82d7e8 /* blue */
 }
 
+.selectedRow {
+    background-color: #82d7e8 /* blue */
+}
+
 .fa-spotify:before {
     content: "\f1bc";
 }

@@ -129,7 +129,8 @@
         let user_id;
         let advancedModeShown = false;
         let submitShown = false;
-        var playlistData;
+        var selectedRow;
+        var showSongs = true;
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -239,6 +240,7 @@
                         body.appendChild(div);
 
                         var tbl = document.createElement('table');
+                        tbl.setAttribute('id', 'playlistTable')
 
                         div.appendChild(tbl);
 
@@ -250,7 +252,7 @@
                             var row = document.createElement("tr");
 
                             var cell = document.createElement("td");
-                            var cellText = document.createTextNode(response[i]["name"]);
+                            var cellText = document.createTextNode("- " + response[i]["name"]);
 
                             var cell2 = document.createElement("td");
                             var id = document.createTextNode(response[i]["id"]);
@@ -274,6 +276,7 @@
                                     var pSVG = document.getElementById('graphSVG');
                                     pSVG.parentNode.removeChild(pSVG);
                                 }
+                                showSongs = !showSongs
                                 displayPlaylistData(this); //show graph
                             })
                         }
@@ -288,8 +291,43 @@
                         div.appendChild(tbl);
                         body.appendChild(div)
 
+                        displayPlaylistData(tbl.rows[0])
+
                     }
                 });
+            }
+
+            function addTableRows(row, songList) {
+                var table = document.getElementById('playlistTable')
+                for (var i = 0; i < table.rows.length; i++) {
+                    var curRow = table.rows[i]
+                    if (curRow == row) {
+                        for (var j = 0; j < songList.length; j++) {
+                            var newRow = table.insertRow(i + j + 1)
+                            var cell = document.createElement("td");
+                            var cellText = document.createTextNode("-- " + songList[j]["name"]);
+                            cell.appendChild(cellText)
+                            newRow.appendChild(cell)
+                        }
+                        
+                    }
+                }
+
+            }
+
+            function deleteTableRows(row, songList) {
+                var table = document.getElementById('playlistTable')
+                for (var i = 0; i < table.rows.length; i++) {
+                    var curRow = table.rows[i]
+                    if (curRow == row) {
+                        for (var j = 0; j < songList.length; j++) {
+                            var newRow = table.deleteRow(i + 1)
+                            
+                        }
+                        
+                    }
+                }
+
             }
 
             function setGetUserPlaylistsListener() {
@@ -307,30 +345,12 @@
             }
 
             function displayPlaylistData(element) {
-                // getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
-                //     console.log(response)
-                //     console.log(Object.values(response))
-                //     var body = document.getElementsByTagName("body")[0];
-                //     var div = document.getElementById("viewPlaylistDiv");
-                //     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                //     div.appendChild(svg);
-
-                //     d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
-                //         if (error) throw error;
-
-                //         var svgD3 = d3.select('svg');
-
-                //         var maxDance = d3.max(data, function(d) {return d.danceability;})
-
-                //     })
-
-
-                // });
-
-                //var body = document.getElementsByTagName("body")[0];
-                // var div = document.createElement("div");
-                // div.setAttribute("id", 'graphsDiv')
-                // body.appendChild(div);
+                
+                if (selectedRow != null) {
+                    selectedRow.setAttribute('class', 'tableRow');
+                }
+                selectedRow = element;
+                selectedRow.setAttribute('class', 'selectedRow');
 
                 var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.setAttribute('style', 'border: 1px grey');
@@ -342,13 +362,16 @@
 
                 div.appendChild(svg)
 
-                // div.appendChild(svg);
-                //
-
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
 
                     var dataV = Object.values(data)
+
+                    if (showSongs) {
+                        addTableRows(element, dataV)
+                    } else {
+                        deleteTableRows(element, dataV)
+                    }
 
                     console.log(dataV)
 
