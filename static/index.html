@@ -16,7 +16,8 @@
     <meta property="og:image" content="placeholder"/>
 
     <link rel="icon" type="image/x-icon" href="assets/ico/favicon.ico?v=2">
-
+    <script src="https://use.fontawesome.com/287f0668e1.js"></script>
+    <link href="https://use.fontawesome.com/287f0668e1.css" media="all" rel="stylesheet">
     <style type="text/css">
         #login, #loggedin {
             display: none;
@@ -31,11 +32,13 @@
 <body class="page">
 <div class="container">
     <div id="login">
-        <br>
-        <div class="container-fluid-landing"><a href="/api/login" class="text-center btn">Log in with <i
+        <br><center>
+        <div class="container-fluid-landing">
+            <div id="blurb">Be your own workout DJ!</div><br>
+            <br><a href="/api/login" class="text-center btn" id="spotify-button">Log in with <i
                 class="fa fa-spotify" aria-hidden="true"></i>
             Spotify</a>
-        </div>
+        </div></center>
     </div>
 </div>
 <div id="loggedin">
@@ -254,7 +257,7 @@
                     // var body = document.getElementsByTagName("body")[0];
                     // var div = document.getElementById("createPlaylistDiv");
                     // var svg = document.createElement('svg');
-                    // div.appendChild(svg);       
+                    // div.appendChild(svg);
                 });
             }
 
