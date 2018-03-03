@@ -294,6 +294,12 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
 
                             songMap[id]['exercise-suitability'] = 80 * songData.valence + (1 - songData.liveness) * 20;
                             songMap[id]['exercise-intensity'] = 40 * songData.danceability + 30 * songData.valence + 30 * songData.energy;
+
+                            // Fix possible range issues
+                            songMap[id]['exercise-suitability'] = Math.min(songMap[id]['exercise-suitability'], 100);
+                            songMap[id]['exercise-suitability'] = Math.max(songMap[id]['exercise-suitability'], 0);
+                            songMap[id]['exercise-intensity'] = Math.min(songMap[id]['exercise-intensity'], 100);
+                            songMap[id]['exercise-intensity'] = Math.max(songMap[id]['exercise-intensity'], 0);
                         }
 
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
