@@ -13,5 +13,8 @@ table {
 }
 
 .playlistTable {
-    text-align: center;
+    text-align: left;
+    border-style: hidden;
+    padding: 15px;
+    border-bottom-color: transparent;
 }
