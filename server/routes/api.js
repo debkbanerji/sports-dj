@@ -376,7 +376,6 @@ router.post('/create-playlist', function (req, finalRes) {
     let endIntensity = 100;
 
     if (targetExerciseType === 'Cardio') {
-        console.log('cardio');
         startIntensity = 34;
         endIntensity = 66;
     } else if (targetExerciseType === 'Yoga') {
@@ -396,7 +395,7 @@ router.post('/create-playlist', function (req, finalRes) {
             let songObjects = Object.values(songs);
             songObjects = getRandomSubarray(songObjects, maxSongs);
             songObjects = songObjects.sort(function (a, b) {
-                return a['exercise-intensity'] - b['exercise-intensity'];
+                return (a['exercise-intensity']+ a['tempo']) - (b['exercise-intensity'] + b['tempo']);
             });
             const songIds = [];
             for (let j = 0; j < songObjects.length; j++) {
