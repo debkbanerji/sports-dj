@@ -222,9 +222,6 @@ refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
 // Updates the song map with the necessary information and uploads it to firebase once all songs have been processed
 processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes, callback) {
     const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks?offset=' + index;
-
-    console.log(userID, playlistID, index);
-
     request({
         url: requestURL,
         method: 'GET',
@@ -236,6 +233,7 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
             let responseObject = JSON.parse(body);
 
             if (responseObject.total === index) {
+                delete songMap[null];
                 database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
                 if (callback) {
                     callback()
