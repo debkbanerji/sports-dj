@@ -196,18 +196,21 @@
                     success: function (response) {
 
                         var body = document.getElementsByTagName("body")[0];
-                        var newRow = document.createElement('newRow');
-                        newRow.setAttribute("class", "row");
-
-                        var div = document.createElement('div');
-                        div.setAttribute("id", "viewPlaylistDiv");
-                        div.setAttribute("class", "col-sm");
-                        newRow.appendChild(div);
-                        // TODO: create other column and add as child to newRow
+                        var newRow = document.createElement("newRow");
+                        // newRow.setAttribute("class", "row");
+                        newRow.setAttribute("id", "elementsRow");
 
                         var div = document.createElement("div");
-                        div.setAttribute("id", 'graphsDiv')
-                        body.appendChild(div);
+                        div.setAttribute("id", "viewPlaylistDiv");
+                        div.setAttribute("class", "col-xs-5 col-sm-6 col-lg-4");
+                        newRow.appendChild(div);
+
+                        var newdiv = document.createElement("div");
+                        newdiv.setAttribute("id", "graphsDiv");
+                        newdiv.setAttribute("class", "col-xs-7 col-sm-6 col-lg-8");
+
+                        newRow.appendChild(newdiv);
+                        body.appendChild(newRow);
 
                         var tbl = document.createElement('table');
 
@@ -314,7 +317,7 @@
                 div.appendChild(svg)
 
                 // div.appendChild(svg);
-                // 
+                //
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
@@ -346,6 +349,68 @@
                     })
 
                     var xscale = d3.scaleLinear()
+                            .domain([0, songNames.length])
+                            .range([0, 1000])
+
+                    var yscale2 = d3.scaleLinear()
+                        .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
+                        .range([400,0]);
+
+                    var yAxis1 = d3.axisLeft(yscale1).ticks(11);
+
+                    var yAxis2 = d3.axisLeft(yscale2).ticks(11);
+
+                    var xAxis = d3.axisBottom(xscale).ticks(songNames.length).tickFormat("");
+
+                    var danceLine = d3.line()
+                        .x(function(d, i) {return xscale(i) + 30;})
+                        .y(function(d) {return yscale1(d.danceability);});
+
+                    var valenceLine = d3.line()
+                        .x(function(d, i) {return xscale(i) + 30;})
+                        .y(function(d) {return yscale1(d.valence);});
+
+                    var energyLine = d3.line()
+                        .x(function(d, i) {return xscale(i) + 30;})
+                        .y(function(d) {return yscale1(d.energy);});
+
+                    var tempoLine = d3.line()
+                        .x(function(d, i) {return xscale(i) + 30;})
+                        .y(function(d) {return yscale2(d.tempo);});
+
+                    svgD3.append("path")
+                      .data([dataV])
+                      .attr("class", "line")
+                      .attr('stroke', 'white')
+                      .attr('fill', 'none')
+                      .attr('transform', 'translate(0, 10)')
+                      .attr("d", danceLine);
+
+                    svgD3.append("path")
+                      .data([dataV])
+                      .attr("class", "line")
+                      .attr('stroke', '#30842e')
+                      .attr('fill', 'none')
+                      .attr('transform', 'translate(0, 10)')
+                      .attr("d", valenceLine);
+
+                    svgD3.append("path")
+                      .data([dataV])
+                      .attr("class", "line")
+                      .attr('stroke', '#82D7E8')
+                      .attr('fill', 'none')
+                      .attr('transform', 'translate(0, 10)')
+                      .attr("d", energyLine);
+
+                    svgD3.append("path")
+                      .data([dataV])
+                      .attr("class", "line")
+                      .attr('stroke', 'red')
+                      .attr('fill', 'none')
+                      .attr('transform', 'translate(0, 450)')
+                      .attr("d", tempoLine);
+
+                    var xscale = d3.scaleLinear()
                         .domain([0, songNames.length])
                         .range([0, 1000])
 
@@ -359,7 +424,7 @@
 
                     var yAxis2 = d3.axisLeft(yscale2).ticks(11);
 
-                    var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
+                    var xAxis = d3.axisBottom(xscale).ticks(songNames.length).tickFormat("");
 
                     var danceLine = d3.line()
                         .x(function (d, i) {
@@ -425,11 +490,11 @@
                         .attr('transform', 'translate(0, 450)')
                         .attr("d", tempoLine);
 
-                        svgD3.append('g')
-                            .attr('class', 'yaxis')
-                            .attr('transform', 'translate(30, 10)')
-                            .style('stroke', 'white')
-                            .call(yAxis1);
+                    svgD3.append('g')
+                        .attr('class', 'yaxis')
+                        .attr('transform', 'translate(30, 10)')
+                        .style('stroke', 'white')
+                        .call(yAxis1);
 
                     svgD3.append('g')
                         .attr('class', 'yaxis')
@@ -445,7 +510,7 @@
 
                     svgD3.append('g')
                         .attr('class', 'xaxis')
-                        .attr('transform', 'translate(30, 860)')
+                        .attr('transform', 'translate(30, 850)')
                         .attr('stroke', 'white')
                         .call(xAxis);
 
