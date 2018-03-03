@@ -359,9 +359,19 @@ router.post('/create-playlist', function (req, finalRes) {
     const maxSongs = Number(req.body.maxSongs);
     const targetExerciseType = req.body.exerciseType;
 
-    let startIntensity = 20;
-    let endIntensity = 100;
     const suitabilityThreshold = 0.3;
+
+    let startIntensity = 67;
+    let endIntensity = 100;
+
+    if (targetExerciseType === 'Cardio') {
+        console.log('cardio');
+        startIntensity = 34;
+        endIntensity = 66;
+    } else if (targetExerciseType === 'Yoga') {
+        startIntensity = 0;
+        endIntensity = 33;
+    }
 
     database.ref('user-songs/' + userId)
         .orderByChild('exercise-intensity')
@@ -397,7 +407,7 @@ router.post('/create-playlist', function (req, finalRes) {
             request.post(createPlaylistOptions, function (error, response, body) {
                 if (!error) {
                     const playlistId = JSON.parse(body).id;
-                    finalRes.send(songObjects);
+                    finalRes.send(playlistId);
                     addSongsToPlaylist(songIds, 0, userId, playlistId, accessToken)
                 } else {
                     console.log(error);
