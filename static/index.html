@@ -218,7 +218,7 @@
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
-                            row.addEventListener('dblclick', function() {
+                            row.addEventListener('click', function() {
                                 displayPlaylistData(this);
                             })
                         }
@@ -273,15 +273,18 @@
                 // });
 
                 var body = document.getElementsByTagName("body")[0];
-                    var div = document.getElementById("viewPlaylistDiv");
-                    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svg.setAttribute('style', 'border: 1px grey');
-                    svg.setAttribute('width', '400');
-                    svg.setAttribute('height', '400');
+                var div = document.createElement("div");
+                div.setAttribute("id", 'graphsDiv')
+                body.appendChild(div);
 
-                    div.appendChild(svg);
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('style', 'border: 1px grey');
+                svg.setAttribute('width', '400');
+                svg.setAttribute('height', '400');
 
-                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
+                div.appendChild(svg);
+
+                d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
                         if (error) throw error;
 
                         console.log(data)
@@ -291,6 +294,8 @@
                         var svgD3 = d3.select('svg');
 
                         var maxDance = d3.max(dataV, function(d) {return d.danceability;}) 
+
+                        var maxValence = d3.max(dataV, function(d) {return d.valence;})
 
                         var yscale = d3.scaleLinear()
                             .domain([0,maxDance])
@@ -310,12 +315,34 @@
                             .x(function(d, i) {return i*5 + 30;})
                             .y(function(d) {return yscale(d.danceability);});
 
+                        var valenceLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.valence);});
+
+                        var energyLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.energy);});
+
                         svgD3.append("path")
                           .data([dataV])
                           .attr("class", "line")
                           .attr('stroke', 'white')
                           .attr('fill', 'none')
                           .attr("d", danceLine);
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', '#30842e')
+                          .attr('fill', 'none')
+                          .attr("d", valenceLine);
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', '#82D7E8')
+                          .attr('fill', 'none')
+                          .attr("d", energyLine);
 
                         svgD3.append('g')
                             .attr('class', 'yaxis')
