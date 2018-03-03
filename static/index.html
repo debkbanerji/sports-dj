@@ -16,7 +16,8 @@
     <meta property="og:image" content="placeholder"/>
 
     <link rel="icon" type="image/x-icon" href="assets/ico/favicon.ico?v=2">
-
+    <script src="https://use.fontawesome.com/287f0668e1.js"></script>
+    <link href="https://use.fontawesome.com/287f0668e1.css" media="all" rel="stylesheet">
     <style type="text/css">
         #login, #loggedin {
             display: none;
@@ -31,11 +32,13 @@
 <body class="page">
 <div class="container">
     <div id="login">
-        <br>
-        <div class="container-fluid-landing"><a href="/api/login" class="text-center btn">Log in with <i
+        <br><center>
+        <div class="container-fluid-landing">
+            <div id="blurb">Be your own workout DJ!</div><br>
+            <br><a href="/api/login" class="text-center btn" id="spotify-button">Log in with <i
                 class="fa fa-spotify" aria-hidden="true"></i>
             Spotify</a>
-        </div>
+        </div></center>
     </div>
 </div>
 <div id="loggedin">
@@ -215,7 +218,7 @@
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
-                            row.addEventListener('dblclick', function() {
+                            row.addEventListener('click', function() {
                                 displayPlaylistData(this);
                             })
                         }
@@ -249,13 +252,111 @@
             }
 
             function displayPlaylistData(element) {
-                getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
-                    console.log(response)
-                    // var body = document.getElementsByTagName("body")[0];
-                    // var div = document.getElementById("createPlaylistDiv");
-                    // var svg = document.createElement('svg');
-                    // div.appendChild(svg);       
-                });
+                // getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
+                //     console.log(response)
+                //     console.log(Object.values(response))
+                //     var body = document.getElementsByTagName("body")[0];
+                //     var div = document.getElementById("viewPlaylistDiv");
+                //     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                //     div.appendChild(svg);
+
+                //     d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
+                //         if (error) throw error;
+
+                //         var svgD3 = d3.select('svg');
+
+                //         var maxDance = d3.max(data, function(d) {return d.danceability;})
+
+                //     })
+
+
+                // });
+
+                var body = document.getElementsByTagName("body")[0];
+                var div = document.createElement("div");
+                div.setAttribute("id", 'graphsDiv')
+                body.appendChild(div);
+
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('style', 'border: 1px grey');
+                svg.setAttribute('width', '400');
+                svg.setAttribute('height', '400');
+
+                div.appendChild(svg);
+
+                d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
+                        if (error) throw error;
+
+                        console.log(data)
+
+                        var dataV = Object.values(data)
+
+                        var svgD3 = d3.select('svg');
+
+                        var maxDance = d3.max(dataV, function(d) {return d.danceability;}) 
+
+                        var maxValence = d3.max(dataV, function(d) {return d.valence;})
+
+                        var yscale = d3.scaleLinear()
+                            .domain([0,maxDance])
+                            .range([200,0]);
+
+                        var songNames = dataV.map(function(d) {return d.name;})
+
+                        var xscale = d3.scaleLinear()
+                            .domain([0, songNames.length])
+                            .range([0, songNames.length * 5])
+
+                        var yAxis = d3.axisLeft(yscale).ticks(10);
+
+                        var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
+
+                        var danceLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.danceability);});
+
+                        var valenceLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.valence);});
+
+                        var energyLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.energy);});
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', 'white')
+                          .attr('fill', 'none')
+                          .attr("d", danceLine);
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', '#30842e')
+                          .attr('fill', 'none')
+                          .attr("d", valenceLine);
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', '#82D7E8')
+                          .attr('fill', 'none')
+                          .attr("d", energyLine);
+
+                        svgD3.append('g')
+                            .attr('class', 'yaxis')
+                            .attr('transform', 'translate(30, 10)')
+                            .attr('stroke', 'white')
+                            .call(yAxis);
+
+                        svgD3.append('g')
+                            .attr('class', 'xaxis')
+                            .attr('transform', 'translate(30, 210)')
+                            .attr('stroke', 'white')
+                            .call(xAxis);
+
+                    })
             }
 
             function setCreateUserPlaylistsListener() {
