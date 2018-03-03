@@ -166,8 +166,6 @@
                         console.log(response);
                     }
                 });
-                refreshPlaylistInfo('spotify', '37i9dQZF1DX3FNkD0kDpDV');
-                getUserPlaylists();
             }
 
             function getUserPlaylists() {
@@ -182,7 +180,7 @@
                         div.setAttribute("id", "playlistDiv")
 
                         var tbl = document.createElement('table');
-                        
+
                         div.appendChild(tbl);
 
                         tbl.setAttribute('class', 'playlistTable');
