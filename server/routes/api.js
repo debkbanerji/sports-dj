@@ -169,10 +169,21 @@ function getRandomSubarray(arr, size) {
     return shuffled.slice(0, size);
 }
 
-function upthenDown(arr, upRatio) {
+function upThenDown(arr, upRatio) {
     let start = 0;
     let end = arr.length - 1;
     let result = [];
+    for (let i = 0; i < arr.length; i++) {
+        result.push(i);
+    }
+    for (let i = 0; i < arr.length; i++) {
+        if (i % upRatio === 0) {
+            result[end--] = arr[i];
+        } else {
+            result[start++] = arr[i];
+        }
+    }
+    return result;
 }
 
 router.get('/stored-user-info/:id', function (req, res) {
@@ -368,10 +379,11 @@ getSongList = function (songMap) {
     songList = songList.sort(function (a, b) {
         return a.index - b.index;
     });
+    songList = upThenDown(songList, 7);
 
     for (var i = 0; i < songList.length; i++) {
-        var exType = ""
-        var intensity = songList[i]['exercise-intensity']
+        var exType = "";
+        var intensity = songList[i]['exercise-intensity'];
         if (intensity >= 150) {
             exType = "Strength"
         } else if (intensity >= 75) {
