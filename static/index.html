@@ -166,6 +166,8 @@
                         console.log(response);
                     }
                 });
+                refreshPlaylistInfo('spotify', '37i9dQZF1DX3FNkD0kDpDV');
+                getUserPlaylists();
             }
 
             function getUserPlaylists() {
@@ -176,7 +178,12 @@
 
                         var body = document.getElementsByTagName("body")[0];
 
+                        var div = document.createElement('div');
+                        div.setAttribute("id", "playlistDiv")
+
                         var tbl = document.createElement('table');
+                        
+                        div.appendChild(tbl);
 
                         tbl.setAttribute('class', 'playlistTable');
 
@@ -209,7 +216,7 @@
             }
 
             function setGetUserPlaylistsListener() {
-                document.getElementById("viewPlaylistButton").addEventListener("click", function() {
+                document.getElementById("viewPlaylistButton").addEventListener("click", function () {
                     getUserPlaylists();
                     document.getElementById("buttonsRow").style.display = "none";
                 })
@@ -220,7 +227,7 @@
             }
 
 
-            function refreshPlaylistInfo(playlistID) {
+            function refreshPlaylistInfo(userId, playlistID) {
                 $.ajax({
                     type: "POST",
                     url: '/api/refresh-playlist-info/',
