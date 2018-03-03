@@ -26,7 +26,7 @@ table {
     color: white;
 }
 
-#playlistDiv {
+#viewPlaylistDiv {
     /* centers the playlist div */
     position: absolute;
     left: 50%;

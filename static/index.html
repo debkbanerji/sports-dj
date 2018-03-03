@@ -177,7 +177,7 @@
 
 
                         var div = document.createElement('div');
-                        div.setAttribute("id", "playlistDiv");
+                        div.setAttribute("id", "viewPlaylistDiv");
 
                         var tbl = document.createElement('table');
 
@@ -225,6 +225,10 @@
 
             function setGetUserPlaylistsListener() {
                 document.getElementById("viewPlaylistButton").addEventListener("click", function () {
+                    if (document.getElementById('createPlaylistDiv') != null) {
+                        var pDiv = document.getElementById('createPlaylistDiv');
+                        pDiv.parentNode.removeChild(pDiv);
+                    }
                     getUserPlaylists();
                 })
             }
@@ -235,7 +239,11 @@
 
             function setCreateUserPlaylistsListener() {
                 document.getElementById("createPlaylistButton").addEventListener("click", function () {
-                    console.log("in listener")
+                    if (document.getElementById('viewPlaylistDiv') != null) {
+                        var pDiv = document.getElementById('viewPlaylistDiv');
+                        pDiv.parentNode.removeChild(pDiv);
+                    }
+
                     var body = document.getElementsByTagName("body")[0];
 
                     var div = document.createElement('div');
