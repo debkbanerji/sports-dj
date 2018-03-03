@@ -275,6 +275,12 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                             const songData = songDataList[i];
                             const id = songData.id;
                             songMap[id].valence = songData.valence;
+                            songMap[id].tempo = songData.tempo;
+                            songMap[id].energy = songData.energy;
+                            songMap[id].instrumentalness = songData.instrumentalness;
+                            songMap[id].loudness = songData.loudness;
+                            songMap[id].time_signature = songData.time_signature;
+                            songMap[id].danceability = songData.danceability;
                         }
 
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
