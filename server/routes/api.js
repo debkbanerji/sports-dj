@@ -361,10 +361,18 @@ router.post('/create-playlist', function (req, finalRes) {
         // .startAt(suitabilityThreshold, 'exercise-suitability')
         .startAt(startIntensity, 'exercise-intensity')
         .endAt(endIntensity, 'exercise-intensity')
+        .limitToFirst(200)
         .once('value')
         .then(function (snapshot) {
             const songs = snapshot.val();
-            const songIds = Object.keys(songs);
+            let songObjects = Object.values(songs);
+            songObjects = songObjects.sort(function (a, b) {
+                return a['exercise-intensity'] - b['exercise-intensity'];
+            });
+            const songIds = [];
+            for (let j = 0; j < songObjects.length; j++) {
+                songIds.push(songObjects[j].id);
+            }
 
             const createPlaylistOptions = {
                 url: 'https://api.spotify.com/v1/users/' + userId + '/playlists',
@@ -382,7 +390,7 @@ router.post('/create-playlist', function (req, finalRes) {
             request.post(createPlaylistOptions, function (error, response, body) {
                 if (!error) {
                     const playlistId = JSON.parse(body).id;
-                    finalRes.send(playlistId);
+                    finalRes.send(songObjects);
                     addSongsToPlaylist(songIds, 0, userId, playlistId, accessToken)
                 } else {
                     console.log(error);
