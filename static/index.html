@@ -203,14 +203,14 @@
                         var div = document.createElement("div");
                         div.setAttribute("id", "viewPlaylistDiv");
                         div.setAttribute("class", "col-xs-5 col-sm-6 col-lg-4");
-                        newRow.appendChild(div);
+                        div.appendChild(newRow);
 
                         var newdiv = document.createElement("div");
                         newdiv.setAttribute("id", "graphsDiv");
                         newdiv.setAttribute("class", "col-xs-7 col-sm-6 col-lg-8");
 
                         newRow.appendChild(newdiv);
-                        body.appendChild(newRow);
+                        body.appendChild(div);
 
                         var tbl = document.createElement('table');
 
