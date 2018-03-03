@@ -105,6 +105,7 @@
         let user_id;
         let advancedModeShown = false;
         let submitShown = false;
+        var playlistData;
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -196,7 +197,6 @@
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
-                        console.log(response);
 
                         var body = document.getElementsByTagName("body")[0];
                         var newRow = document.createElement('newRow');
@@ -211,13 +211,6 @@
                         var div = document.createElement("div");
                         div.setAttribute("id", 'graphsDiv')
                         body.appendChild(div);
-
-                        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        svg.setAttribute('style', 'border: 1px grey');
-                        svg.setAttribute('width', '1080');
-                        svg.setAttribute('height', '2000');
-
-                        div.appendChild(svg);
 
                         var tbl = document.createElement('table');
 
@@ -250,7 +243,11 @@
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
-                            row.addEventListener('click', function () {
+                            row.addEventListener('click', function() {
+                                if (document.getElementById('graphSVG') != null) {
+                                    var pSVG = document.getElementById('graphSVG');
+                                    pSVG.parentNode.removeChild(pSVG);
+                                }
                                 displayPlaylistData(this); //show graph
                             })
                         }
@@ -309,21 +306,27 @@
                 // div.setAttribute("id", 'graphsDiv')
                 // body.appendChild(div);
 
-                // var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                // svg.setAttribute('style', 'border: 1px grey');
-                // svg.setAttribute('width', '1080');
-                // svg.setAttribute('height', '2000');
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('style', 'border: 1px grey');
+                svg.setAttribute('width', '1080');
+                svg.setAttribute('height', '2000');
+                svg.setAttribute('id', 'graphSVG');
+
+                var div = document.getElementById('graphsDiv');
+
+                div.appendChild(svg)
 
                 // div.appendChild(svg);
+                // 
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
 
-                    console.log(data)
+                        var dataV = Object.values(data)
 
-                    var dataV = Object.values(data)
+                        playlistData = dataV;
 
-                    var svgD3 = d3.select('svg');
+                        var svgD3 = d3.select('svg');
 
                     var maxDance = d3.max(dataV, function (d) {
                         return d.danceability;
@@ -337,14 +340,9 @@
                         return d.energy;
                     })
 
-                    var minEnergy = d3.min(dataV, function (d) {
-                        return d.energy;
-                    })
-                    console.log(minEnergy)
-
-                    var yscale1 = d3.scaleLinear()
-                        .domain([0, d3.max([maxDance, maxValence, maxEnergy])])
-                        .range([400, 0]);
+                        var yscale1 = d3.scaleLinear()
+                            .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
+                            .range([400,0]);
 
                     var songNames = dataV.map(function (d) {
                         return d.name;
@@ -430,11 +428,11 @@
                         .attr('transform', 'translate(0, 450)')
                         .attr("d", tempoLine);
 
-                    svgD3.append('g')
-                        .attr('class', 'yaxis')
-                        .attr('transform', 'translate(30, 10)')
-                        .attr('stroke', 'white')
-                        .call(yAxis1);
+                        svgD3.append('g')
+                            .attr('class', 'yaxis')
+                            .attr('transform', 'translate(30, 10)')
+                            .style('stroke', 'white')
+                            .call(yAxis1);
 
                     svgD3.append('g')
                         .attr('class', 'yaxis')
