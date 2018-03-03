@@ -249,13 +249,84 @@
             }
 
             function displayPlaylistData(element) {
-                getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
-                    console.log(response)
-                    // var body = document.getElementsByTagName("body")[0];
-                    // var div = document.getElementById("createPlaylistDiv");
-                    // var svg = document.createElement('svg');
-                    // div.appendChild(svg);       
-                });
+                // getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
+                //     console.log(response)
+                //     console.log(Object.values(response))
+                //     var body = document.getElementsByTagName("body")[0];
+                //     var div = document.getElementById("viewPlaylistDiv");
+                //     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                //     div.appendChild(svg);
+
+                //     d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
+                //         if (error) throw error;
+
+                //         var svgD3 = d3.select('svg');
+
+                //         var maxDance = d3.max(data, function(d) {return d.danceability;})
+
+                //     })
+
+
+                // });
+
+                var body = document.getElementsByTagName("body")[0];
+                    var div = document.getElementById("viewPlaylistDiv");
+                    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.setAttribute('style', 'border: 1px grey');
+                    svg.setAttribute('width', '400');
+                    svg.setAttribute('height', '400');
+
+                    div.appendChild(svg);
+
+                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
+                        if (error) throw error;
+
+                        console.log(data)
+
+                        var dataV = Object.values(data)
+
+                        var svgD3 = d3.select('svg');
+
+                        var maxDance = d3.max(dataV, function(d) {return d.danceability;}) 
+
+                        var yscale = d3.scaleLinear()
+                            .domain([0,maxDance])
+                            .range([200,0]);
+
+                        var songNames = dataV.map(function(d) {return d.name;})
+
+                        var xscale = d3.scaleLinear()
+                            .domain([0, songNames.length])
+                            .range([0, songNames.length * 5])
+
+                        var yAxis = d3.axisLeft(yscale).ticks(10);
+
+                        var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
+
+                        var danceLine = d3.line()
+                            .x(function(d, i) {return i*5 + 30;})
+                            .y(function(d) {return yscale(d.danceability);});
+
+                        svgD3.append("path")
+                          .data([dataV])
+                          .attr("class", "line")
+                          .attr('stroke', 'white')
+                          .attr('fill', 'none')
+                          .attr("d", danceLine);
+
+                        svgD3.append('g')
+                            .attr('class', 'yaxis')
+                            .attr('transform', 'translate(30, 10)')
+                            .attr('stroke', 'white')
+                            .call(yAxis);
+
+                        svgD3.append('g')
+                            .attr('class', 'xaxis')
+                            .attr('transform', 'translate(30, 210)')
+                            .attr('stroke', 'white')
+                            .call(xAxis);
+
+                    })
             }
 
             function setCreateUserPlaylistsListener() {

@@ -32,3 +32,7 @@ table {
     left: 50%;
     margin-left: -100px;
 } */
+
+.yaxis line {
+    stroke: white;
+}
