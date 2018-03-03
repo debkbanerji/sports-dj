@@ -90,10 +90,9 @@ table {
 
 #spotify-button {
     background-color: #30842e;
-    color: #000000;
+    color: #FFFFFF;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
-    border-color: #000000;
 }
 
 #blurb {
