@@ -157,6 +157,7 @@ div { margin: 20px; }
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    height: 35px;
 }
 
 /* -------------------- Colors: Background */
@@ -178,7 +179,7 @@ div { margin: 20px; }
 /* -------------------- Source: http://danielneumann.com/blog/how-to-style-dropdown-with-css-only/ */
 #mainselection select {
     border: 0;
-    color: #EEE;
+    color: #000000;
     background: transparent;
     font-size: 20px;
     font-weight: bold;
@@ -212,7 +213,7 @@ select#soflow, select#soflow-color {
     background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
     background-position: 97% center;
     background-repeat: no-repeat;
-    border: 1px solid #AAA;
+    /* border: 1px solid #AAA; */
     color: #555;
     font-size: inherit;
     margin: 20px;
@@ -233,12 +234,29 @@ select#soflow-color {
     padding-left: 15px;
 }
 
+/* entire Create Playlist form */
 #submitPlaylistForm {
     position: absolute;
-    left: 20%;
+    left: 12%;
     width: 1000px;
+    top: 300px;
 }
 
+/* label of text on create playlist form */
 .control-label {
     color: #82d7e8;
+}
+
+#maxNumSongs {
+    width: 220px;
+}
+
+#create-playlist-button {
+    text-align: center;
+    width: 100%;
+}
+
+#subbutton {
+    text-align: center;
+    margin: 0px;
 }
