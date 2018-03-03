@@ -85,10 +85,11 @@ table {
 #viewPlaylistDiv {
     /* margin-top: 0px; */
     left: 20px;
+    width: 270px;
 }
 
 #graphsDiv {
     position: absolute;
-    top: 220px;
-    left: 240px;
+    top: 0px;
+    left: 300px;
 }
