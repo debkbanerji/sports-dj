@@ -828,7 +828,12 @@
                     const weightKil = userProfile.weight / 2.2;
                     const durationSeconds = song['duration-ms'] / 1000;
                     let metValue = 10;
-                    const type = song.type;
+                    const type = song['exercise-type'];
+                    if (type === 'Yoga') {
+                        metValue = 3;
+                    } else if (type === 'Cardio') {
+                        metValue = 7;
+                    }
                     const songCalories = weightKil * metValue * durationSeconds / 3600;
                     result.push(songCalories);
                 }
