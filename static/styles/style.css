@@ -26,9 +26,12 @@ table {
     color: white;
 }
 
-/* #viewPlaylistDiv {
-    /* centers the playlist div */
+#viewPlaylistDiv {
+    centers the playlist div
     position: absolute;
-    left: 50%;
-    margin-left: -100px;
-} */
+    left: 10%;
+}
+
+.tableRow:hover {
+    background-color: #82d7e8 /* Darker green */
+}
