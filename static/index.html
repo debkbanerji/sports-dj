@@ -20,15 +20,15 @@
             display: none;
         }
     </style>
+    <div>
+        <center><img src="images/sportsdj.png"></center>
+    </div>
 </head>
 
 <body class="page">
 <div class="container">
     <div id="login">
         <br>
-        <div>
-            <img src="images/sportsdj.png">
-        </div>
         <div class="container-fluid-landing"><a href="/api/login" class="text-center btn">Log in with <i
                 class="fa fa-spotify" aria-hidden="true"></i>
             Spotify</a>
@@ -45,15 +45,18 @@
         <button hidden class=" btn btn-default" id="obtain-new-token">Obtain new token using the refresh token
         </button>
     </div>
-    <div>
-        <img src="images/sportsdj.png">
+    <br>
+    <div class="row">
+
+        <div id="viewPlaylistButton" class="col-sm">
+            <button type="button" onclick="alert('Hello world!')" class="btn btn-success">View Playlist</button>
+        </div>
+        <div id="createPlaylistButton" class="col-sm">
+            <button type="button" onclick="alert('Hello world!')" class="btn btn-success">Create Playlist</button>
+        </div>
+
     </div>
-    <div id="viewPlaylistButton">
-        <button type="button" onclick="alert('Hello world!')">View Playlist</button>
-    </div>
-    <div id="createPlaylistButton">
-        <button type="button" onclick="alert('Hello world!')">Create Playlist</button>
-    </div>
+
 </div>
 </div>
 
