@@ -17,7 +17,7 @@ table {
 .playlistTable {
     text-align: left;
     border-style: hidden;
-    padding: 15px;
+    padding: 10%;
     border-bottom-color: transparent;
 }
 
@@ -26,9 +26,9 @@ table {
     color: white;
 }
 
-#viewPlaylistDiv {
+/* #viewPlaylistDiv {
     /* centers the playlist div */
     position: absolute;
     left: 50%;
     margin-left: -100px;
-}
+} */
