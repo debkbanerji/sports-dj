@@ -167,6 +167,30 @@
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
                         console.log(response);
+
+                        var body = document.getElementsByTagName("body")[0];
+
+                        var tbl = document.createElement('table');
+                        var tblBody = document.createElement('tbody');
+
+                        for (var i = 0; i < response.length; i++) {
+                            var row = document.createElement("tr");
+
+                            var cell = document.createElement("td");
+                            var cellText = document.createTextNode(response[i]["name"]);
+
+                            cell.appendChild(cellText);
+                            row.appendChild(cell);
+
+                            tblBody.appendChild(row);
+                        }
+
+                        // put the <tbody> in the <table>
+                        tbl.appendChild(tblBody);
+                        // appends <table> into <body>
+                        body.appendChild(tbl);
+                        // sets the border attribute of tbl to 2;
+                        tbl.setAttribute("border", "2");
                     }
                 });
             }
