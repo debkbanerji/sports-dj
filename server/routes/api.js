@@ -166,6 +166,44 @@ router.get('/stored-user-info/:id', function (req, res) {
     });
 });
 
+router.get('/playlist-list/:userID', function (req, res) {
+    const userId = req.params.userID;
+    const accessToken = req.query.accessToken;
+
+    console.log(userId);
+    console.log(accessToken);
+
+    const requestURL = 'https://api.spotify.com/v1/users/' + userId + '/playlists';
+
+    request({
+        url: requestURL,
+        method: 'GET',
+        auth: {
+            'bearer': accessToken
+        }
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            const items = JSON.parse(body).items;
+            let result = [];
+
+            for (let i = 0; i < items.length; i++) {
+                const playlist = items[i];
+                result.push({
+                    'name': playlist.name,
+                    'id': playlist.id,
+                    'thumbnailURL': playlist.images[1].url
+                })
+            }
+
+            res.send(result);
+
+        } else {
+            console.log(error);
+            console.log(response);
+        }
+    });
+});
+
 console.log('Set express router');
 
 console.log('Using body parser');

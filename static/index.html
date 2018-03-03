@@ -83,38 +83,37 @@
             oauthTemplate = Handlebars.compile(oauthSource),
             oauthPlaceholder = document.getElementById('oauth');
         var params = getHashParams();
-        var access_token = params.access_token,
+        var accessToken = params.access_token,
             refresh_token = params.refresh_token,
             error = params.error;
+        var userId;
         let user_id;
         let advancedModeShown = false;
         let submitShown = false;
         if (error) {
             alert('There was an error during the authentication');
         } else {
-            if (access_token) {
+            if (accessToken) {
                 // render oauth info
                 oauthPlaceholder.innerHTML = oauthTemplate({
-                    access_token: access_token,
+                    access_token: accessToken,
                     refresh_token: refresh_token
                 });
                 $.ajax({
                     url: 'https://api.spotify.com/v1/me',
                     headers: {
-                        'Authorization': 'Bearer ' + access_token
+                        'Authorization': 'Bearer ' + accessToken
                     },
                     success: function (response) {
                         userProfilePlaceholder.innerHTML = userProfileTemplate(response);
                         authResponse = response;
-                        user_id = response.id;
+                        userId = response.id;
                         $('#login').hide();
                         $('#loggedin').show();
 
-                        const id = response.id;
-
                         // Set up listeners
-                        document.getElementById('welcome-text').innerHTML = 'Hello ' + id;
-                        getStoredUserInfo(id)
+                        document.getElementById('welcome-text').innerHTML = 'Hello ' + userId;
+                        getStoredUserInfo()
                     }
                 });
             } else {
@@ -129,9 +128,9 @@
                         'refresh_token': refresh_token
                     }
                 }).done(function (data) {
-                    access_token = data.access_token;
+                    accessToken = data.access_token;
                     oauthPlaceholder.innerHTML = oauthTemplate({
-                        access_token: access_token,
+                        access_token: accessToken,
                         refresh_token: refresh_token
                     });
                 });
@@ -152,9 +151,18 @@
                 return div.firstChild;
             }
 
-            function getStoredUserInfo(userId) {
+            function getStoredUserInfo() {
                 $.ajax({
                     url: '/api/stored-user-info/' + userId,
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
+
+            function getUserPlaylists() {
+                $.ajax({
+                    url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
                         console.log(response)
                     }
