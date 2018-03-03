@@ -101,8 +101,8 @@
     <center>
         <div class="container-fluid-landing">
             <br>
-            <input id="user-height" placeholder="height (metres)" type="number">
-            <input id="user-weight" placeholder="weight (kilograms)" type="number">
+            <input id="user-height" placeholder="height (inches)" type="number">
+            <input id="user-weight" placeholder="weight (pounds)" type="number">
             <a class="text-center btn btn btn-success" id="submit-bmi">
                 Submit
             </a>
@@ -178,7 +178,7 @@
                                 document.getElementById('submit-bmi').addEventListener('click', function () {
                                     const height = document.getElementById('user-height').value;
                                     const weight = document.getElementById('user-weight').value;
-                                    const bmi = weight / (height * height);
+                                    const bmi = (weight / height / height) * 703
                                     setStoredUserInfo({
                                         height: height,
                                         weight: weight,
