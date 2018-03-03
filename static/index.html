@@ -236,15 +236,25 @@
             }
 
 
-            function refreshPlaylistInfo(userId, playlistID) {
+            function refreshPlaylistInfo(userId, playlistId) {
                 $.ajax({
                     type: "POST",
                     url: '/api/refresh-playlist-info/',
                     data: {
                         'accessToken': accessToken,
                         'userId': userId,
-                        'playlistID': playlistID
+                        'playlistID': playlistId
                     },
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
+
+            function getPlaylistInfo(userId, playlistId) {
+                $.ajax({
+                    type: "GET",
+                    url: '/api/playlist-info/' + userId + '/' + playlistId + '?accessToken=' + accessToken,
                     success: function (response) {
                         console.log(response)
                     }

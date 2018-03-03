@@ -215,11 +215,11 @@ router.post('/refresh-playlist-info/', function (req, res) {
 
 refreshPlaylist = function (playlistID, userID, accessToken, finalRes) {
     const songMap = {};
-    processSongList(0, songMap, userID, playlistID, accessToken, finalRes);
+    processSongList(0, songMap, userID, playlistID, accessToken, finalRes, null);
 };
 
 // Updates the song map with the necessary information and uploads it to firebase once all songs have been processed
-processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes) {
+processSongList = function (index, songMap, userID, playlistID, accessToken, finalRes, callback) {
     const requestURL = 'https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks?offset=' + index;
 
     request({
@@ -234,7 +234,11 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
 
             if (responseObject.total === index) {
                 database.ref('user-playlists/' + userID + '/' + playlistID).set(songMap);
-                finalRes.send(true);
+                if (callback) {
+                    callback()
+                } else {
+                    finalRes.send(true);
+                }
             } else {
 
                 const items = responseObject.items;
@@ -273,7 +277,7 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                             songMap[id].valence = songData.valence;
                         }
 
-                        processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes);
+                        processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
 
                     } else {
                         finalRes.send(error);
@@ -289,6 +293,24 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
         }
     });
 };
+
+router.get('/playlist-info/:userID/:playlistID', function (req, res) {
+    const userID = req.params.userID;
+    const playlistID = req.params.playlistID;
+    const accessToken = req.query.accessToken;
+    database.ref('/user-playlists/' + userID + '/' + playlistID).once('value').then(function (snapshot) {
+        if (!snapshot.exists()) {
+            const songMap = {};
+            processSongList(0, songMap, userID, playlistID, accessToken, null, function () {
+                database.ref('/user-playlists/' + userID + '/' + playlistID).once('value').then(function (snapshot) {
+                    res.send(snapshot.val());
+                });
+            });
+        } else {
+            res.send(snapshot.val());
+        }
+    });
+});
 
 console.log('Set express router');
 
