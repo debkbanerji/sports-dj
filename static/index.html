@@ -201,11 +201,17 @@
                             var cell2 = document.createElement("td");
                             var id = document.createTextNode(response[i]["id"]);
 
+                            var cell3 = document.createElement("td");
+                            var user = document.createTextNode(response[i]['ownerId']);
+
                             cell.appendChild(cellText);
                             cell2.appendChild(id);
+                            cell3.appendChild(user);
                             cell2.setAttribute('hidden', 'true');
+                            cell3.setAttribute('hidden', 'true');
                             row.appendChild(cell);
                             row.appendChild(cell2);
+                            row.appendChild(cell3);
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
@@ -243,8 +249,7 @@
             }
 
             function displayPlaylistData(element) {
-                console.log(element.cells[1].innerHTML);
-                getPlaylistInfo(userId, element.cells[1].innerHTML, function(response) {
+                getPlaylistInfo(element.cells[2].innerHTML, element.cells[1].innerHTML, function(response) {
                     console.log(response)
                     // var body = document.getElementsByTagName("body")[0];
                     // var div = document.getElementById("createPlaylistDiv");
