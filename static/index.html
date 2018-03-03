@@ -49,10 +49,10 @@
         <img src="images/sportsdj.png">
     </div>
     <div id="viewPlaylistButton">
-        <button type="button" onclick="alert('Hello world!')">View Playlist</button>
+        <button type="button" >View Playlist</button>
     </div>
     <div id="createPlaylistButton">
-        <button type="button" onclick="alert('Hello world!')">Create Playlist</button>
+        <button type="button" >Create Playlist</button>
     </div>
 </div>
 </div>
@@ -115,6 +115,7 @@
                         // Set up listeners
                         console.log('Hello ' + userId);
                         getStoredUserInfo()
+                        setGetUserPlaylistsListener();
                     }
                 });
             } else {
@@ -156,7 +157,7 @@
                 $.ajax({
                     url: '/api/stored-user-info/' + userId,
                     success: function (response) {
-                        console.log(response)
+                        console.log(response);
                     }
                 });
             }
@@ -165,9 +166,15 @@
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
-                        console.log(response)
+                        console.log(response);
                     }
                 });
+            }
+
+            function setGetUserPlaylistsListener() {
+                document.getElementById("viewPlaylistButton").addEventListener("click", function() {
+                    getUserPlaylists();
+                })
             }
         }
     })();
