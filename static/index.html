@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="styles/style.css"
+
     <meta property="og:title" content="Sports DJ"/>
     <meta property="og:description"
           content="Visualizing workout based music data"/>
@@ -40,17 +42,14 @@
         <button hidden class=" btn btn-default" id="obtain-new-token">Obtain new token using the refresh token
         </button>
     </div>
-</div>
-</div>
-
-<script id="user-profile-template" type="text/x-handlebars-template">
-    <div class="page">
-
-        <div class="container-fluid text-center" id="welcome-text">
-            <!--Main Stuff Here-->
-        </div>
+    <div id="viewPlaylistButton">
+        <button type="button" onclick="alert('Hello world!')">View Playlist</button>
     </div>
-</script>
+    <div id="createPlaylistButton">
+        <button type="button" onclick="alert('Hello world!')">Create Playlist</button>
+    </div>
+</div>
+</div>
 
 <script id="oauth-template" type="text/x-handlebars-template">
 </script>
@@ -76,9 +75,6 @@
             return hashParams;
         }
 
-        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-            userProfileTemplate = Handlebars.compile(userProfileSource),
-            userProfilePlaceholder = document.getElementById('user-profile');
         var oauthSource = document.getElementById('oauth-template').innerHTML,
             oauthTemplate = Handlebars.compile(oauthSource),
             oauthPlaceholder = document.getElementById('oauth');
@@ -104,7 +100,6 @@
                         'Authorization': 'Bearer ' + access_token
                     },
                     success: function (response) {
-                        userProfilePlaceholder.innerHTML = userProfileTemplate(response);
                         authResponse = response;
                         user_id = response.id;
                         $('#login').hide();
@@ -113,7 +108,7 @@
                         const id = response.id;
 
                         // Set up listeners
-                        document.getElementById('welcome-text').innerHTML = 'Hello ' + id;
+                        console.log('Hello ' + id);
                         getStoredUserInfo(id)
                     }
                 });
