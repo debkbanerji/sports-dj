@@ -6,9 +6,12 @@ body {
 .row {
     text-align: center;
     width: 100%;
-
 }
 
 table {
     color: white;
+}
+
+.playlistTable {
+    text-align: center;
 }

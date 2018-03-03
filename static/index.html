@@ -46,15 +46,13 @@
         </button>
     </div>
     <br>
-    <div class="row">
-
-        <div id="viewPlaylistButton" class="col-sm">
-            <button type="button" class="btn btn-success">View Playlist</button>
-        </div>
-        <div id="createPlaylistButton" class="col-sm">
-            <button type="button" onclick="alert('Hello world!')" class="btn btn-success">Create Playlist</button>
-        </div>
-
+    <div class="row" id="buttonsRow">
+            <div id="viewPlaylistButton" class="col-sm">
+                <button type="button" class="btn btn-success">View Playlist</button>
+            </div>
+            <div id="createPlaylistButton" class="col-sm">
+                <button type="button" onclick="alert('Hello world!')" class="btn btn-success">Create Playlist</button>
+            </div>
     </div>
 
 </div>
@@ -174,6 +172,7 @@
                         var body = document.getElementsByTagName("body")[0];
 
                         var tbl = document.createElement('table');
+                        tbl.setAttribute('class', 'playlistTable');
                         var tblBody = document.createElement('tbody');
 
                         for (var i = 0; i < response.length; i++) {
@@ -201,6 +200,7 @@
             function setGetUserPlaylistsListener() {
                 document.getElementById("viewPlaylistButton").addEventListener("click", function() {
                     getUserPlaylists();
+                    document.getElementById("buttonsRow").style.display = "none";
                 })
             }
 
