@@ -72,13 +72,13 @@
 <div id="submitPlaylistForm">
     <div class="row">
         <!--<div class="dropdown">-->
-            <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type-->
-                <!--<span class="caret"></span></button>-->
-            <!--<ul class="dropdown-menu">-->
-                <!--<li>Strength</li>-->
-                <!--<li>Cardio</li>-->
-                <!--<li>Yoga</li>-->
-            <!--</ul>-->
+        <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type-->
+        <!--<span class="caret"></span></button>-->
+        <!--<ul class="dropdown-menu">-->
+        <!--<li>Strength</li>-->
+        <!--<li>Cardio</li>-->
+        <!--<li>Yoga</li>-->
+        <!--</ul>-->
         <!--</div>-->
         <select id="selected-exercise-type" class="semi-square blue" title="Exercise Type">
             <option value="Strength">Strength</option>
@@ -369,7 +369,7 @@
             //                 cell.appendChild(cellText)
             //                 newRow.appendChild(cell)
             //             }
-                        
+
             //         }
             //     }
 
@@ -382,9 +382,9 @@
             //         if (curRow == row) {
             //             for (var j = 0; j < songList.length; j++) {
             //                 var newRow = table.deleteRow(i + 1)
-                            
+
             //             }
-                        
+
             //         }
             //     }
 
@@ -445,13 +445,16 @@
 
                 var div = document.getElementById('graphsDiv');
 
-                div.appendChild(svg)
+                div.appendChild(svg);
 
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
 
                     var dataV = Object.values(data)
                     console.log(dataV)
+
+                    let totalCalories = getTotalCalories(dataV);
+                    console.log(totalCalories);
 
                     // if (showSongs) {
                     //     addTableRows(element, dataV)
@@ -833,6 +836,29 @@
                         callback(response)
                     }
                 });
+            }
+
+            function getTotalCalories(songList) {
+                let result = [];
+                for (let i = 0; i < songList.length; i++) {
+                    const song = songList[i];
+                    const weightKil = userProfile.weight / 2.2;
+                    const durationSeconds = song['duration-ms'] / 1000;
+                    let metValue = 10;
+                    const type = song['exercise-type'];
+                    if (type === 'Yoga') {
+                        metValue = 3;
+                    } else if (type === 'Cardio') {
+                        metValue = 7;
+                    }
+                    const songCalories = weightKil * metValue * durationSeconds / 3600;
+                    result.push(songCalories);
+                }
+                return result.reduce(add, 0);
+            }
+
+            function add(a, b) {
+                return a + b;
             }
 
             function createPlaylist(userId, playlistName, exerciseType, maxSongs, callback) {
