@@ -94,13 +94,13 @@ table {
 #viewPlaylistDiv {
     /* margin-top: 0px; */
     left: 20px;
-    width: 270px;
+    width: 220px;
 }
 
 #graphsDiv {
     position: absolute;
-    top: 0px;
-    left: 300px;
+    top: -30px;
+    left: 200px;
 }
 
 #submitBMI {

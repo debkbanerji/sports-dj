@@ -19,7 +19,7 @@
     <script src="https://use.fontawesome.com/287f0668e1.js"></script>
     <link href="https://use.fontawesome.com/287f0668e1.css" media="all" rel="stylesheet">
     <style type="text/css">
-        #login, #loggedin, #submitBMI {
+        #login, #loggedin, #submitPlaylistForm {
             display: none;
         }
     </style>
@@ -69,7 +69,7 @@
 
 </div> <!-- end of loggedin -->
 
-<div id="submitBMI">
+<div id="submitPlaylistForm">
     <form class="form-horizontal" action="/action_page.php">
         <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type
@@ -148,7 +148,7 @@
                         authResponse = response;
                         userId = response.id;
                         $('#login').hide();
-                        $('#submitBMI').hide();
+                        $('#submitPlaylistForm').hide();
                         $('#loggedin').show();
 
                         // Set up listeners
@@ -161,7 +161,7 @@
             } else {
                 // render initial screen
                 $('#login').show();
-                $('#submitBMI').hide();
+                $('#submitPlaylistForm').hide();
                 $('#loggedin').hide();
             }
             let obtainNewToken = function () {
@@ -292,11 +292,14 @@
                 });
             }
 
+            // when select View Playlists
             function setGetUserPlaylistsListener() {
                 document.getElementById("viewPlaylistButton").addEventListener("click", function () {
                     if (document.getElementById('createPlaylistDiv') != null) {
                         var pDiv = document.getElementById('createPlaylistDiv');
-                        pDiv.parentNode.removeChild(pDiv);
+                        if (pDiv != null) {
+                            pDiv.parentNode.removeChild(pDiv);
+                        }
                     }
                     if ((document.getElementById('viewButton').className) == 'btn btn-success') {
                         getUserPlaylists();
@@ -484,7 +487,7 @@
                         .attr('text-anchor', 'left')
                         .attr('transform', 'translate(1100,165)')
                         .text('Energy')
-                        
+
 
                     svgD3.append("path")
                         .data([dataV])
@@ -604,6 +607,7 @@
                 })
             }
 
+            // when you click Create Playlist
             function setCreateUserPlaylistsListener() {
                 document.getElementById("createPlaylistButton").addEventListener("click", function () {
                     if ((document.getElementById('createButton').className) == 'btn btn-success') {
@@ -617,20 +621,23 @@
 
                     var div = document.createElement('div');
                     div.setAttribute("id", "createPlaylistDiv");
+                    showExerciseForm();
+
+                    form = document.getElementById("submitPlaylistForm");
+                    div.appendChild(form);
 
                     body.appendChild(div)
                     document.getElementById("createButton").className = 'btn btn-success disabled';
                     document.getElementById("viewButton").className = 'btn btn-success';
-                    showExerciseForm();
+
                 })
             }
 
             function showExerciseForm() {
-                $('#submitBMI').show();
+                $('#submitPlaylistForm').show();
                 $('#loggedin').show();
                 $('#login').hide();
             }
-
 
             function refreshPlaylistInfo(userId, playlistId) {
                 $.ajax({
