@@ -322,11 +322,13 @@
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
                     if (error) throw error;
 
-                        var dataV = Object.values(data)
+                    var dataV = Object.values(data)
 
-                        playlistData = dataV;
+                    console.log(dataV)
 
-                        var svgD3 = d3.select('svg');
+                    playlistData = dataV;
+
+                    var svgD3 = d3.select('svg');
 
                     var maxDance = d3.max(dataV, function (d) {
                         return d.danceability;
@@ -340,9 +342,9 @@
                         return d.energy;
                     })
 
-                        var yscale1 = d3.scaleLinear()
-                            .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
-                            .range([400,0]);
+                    var yscale1 = d3.scaleLinear()
+                        .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
+                        .range([400,0]);
 
                     var songNames = dataV.map(function (d) {
                         return d.name;
@@ -356,59 +358,17 @@
                         .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
                         .range([400,0]);
 
+                    var yscale3 = d3.scaleLinear()
+                        .domain([0, d3.max(dataV, function(d) {return d['exercise-intensity'];})])
+                        .range([400, 0])
+
                     var yAxis1 = d3.axisLeft(yscale1).ticks(11);
 
                     var yAxis2 = d3.axisLeft(yscale2).ticks(11);
 
+                    var yAxis3 = d3.axisLeft(yscale3).ticks(11);
+
                     var xAxis = d3.axisBottom(xscale).ticks(songNames.length).tickFormat("");
-
-                    var danceLine = d3.line()
-                        .x(function(d, i) {return xscale(i) + 30;})
-                        .y(function(d) {return yscale1(d.danceability);});
-
-                    var valenceLine = d3.line()
-                        .x(function(d, i) {return xscale(i) + 30;})
-                        .y(function(d) {return yscale1(d.valence);});
-
-                    var energyLine = d3.line()
-                        .x(function(d, i) {return xscale(i) + 30;})
-                        .y(function(d) {return yscale1(d.energy);});
-
-                    var tempoLine = d3.line()
-                        .x(function(d, i) {return xscale(i) + 30;})
-                        .y(function(d) {return yscale2(d.tempo);});
-
-                    svgD3.append("path")
-                      .data([dataV])
-                      .attr("class", "line")
-                      .attr('stroke', 'white')
-                      .attr('fill', 'none')
-                      .attr('transform', 'translate(0, 10)')
-                      .attr("d", danceLine);
-
-                    svgD3.append("path")
-                      .data([dataV])
-                      .attr("class", "line")
-                      .attr('stroke', '#30842e')
-                      .attr('fill', 'none')
-                      .attr('transform', 'translate(0, 10)')
-                      .attr("d", valenceLine);
-
-                    svgD3.append("path")
-                      .data([dataV])
-                      .attr("class", "line")
-                      .attr('stroke', '#82D7E8')
-                      .attr('fill', 'none')
-                      .attr('transform', 'translate(0, 10)')
-                      .attr("d", energyLine);
-
-                    svgD3.append("path")
-                      .data([dataV])
-                      .attr("class", "line")
-                      .attr('stroke', 'red')
-                      .attr('fill', 'none')
-                      .attr('transform', 'translate(0, 450)')
-                      .attr("d", tempoLine);
 
                     var xscale = d3.scaleLinear()
                         .domain([0, songNames.length])
@@ -458,6 +418,14 @@
                             return yscale2(d.tempo);
                         });
 
+                    var intensityLine = d3.line()
+                        .x(function (d, i) {
+                            return xscale(i) + 30;
+                        })
+                        .y(function (d) {
+                            return yscale2(d['exercise-intensity']);
+                        });
+
                     svgD3.append("path")
                         .data([dataV])
                         .attr("class", "line")
@@ -490,17 +458,26 @@
                         .attr('transform', 'translate(0, 450)')
                         .attr("d", tempoLine);
 
+                    svgD3.append("path")
+                        .data([dataV])
+                        .attr("class", "line")
+                        .attr('stroke', 'blue')
+                        .attr('fill', 'none')
+                        .attr('transform', 'translate(0, 450)')
+                        .attr("d", intensityLine);
+
                     svgD3.append('g')
                         .attr('class', 'yaxis')
                         .attr('transform', 'translate(30, 10)')
                         .style('stroke', 'white')
                         .call(yAxis1);
 
+
                     svgD3.append('g')
                         .attr('class', 'yaxis')
                         .attr('transform', 'translate(30, 450)')
                         .attr('stroke', 'white')
-                        .call(yAxis2);
+                        .call(yAxis3);
 
                     svgD3.append('g')
                         .attr('class', 'xaxis')
