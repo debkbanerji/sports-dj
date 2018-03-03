@@ -22,13 +22,14 @@ table {
 }
 
 .button:hover {
-    background-color: #30842e /* Darker green */
+    background-color: #30842e /* green */
     color: white;
 }
 
-/* #viewPlaylistDiv {
-    /* centers the playlist div */
+#viewPlaylistDiv {
+    centers the playlist div
     position: absolute;
+<<<<<<< HEAD
     left: 50%;
     margin-left: -100px;
 } */
@@ -36,3 +37,31 @@ table {
 .yaxis line {
     stroke: white;
 }
+=======
+    left: 10%;
+}
+
+.tableRow {
+    cursor: pointer;
+}
+
+.tableRow:hover {
+    background-color: #82d7e8 /* Darker green */
+}
+
+.fa-spotify:before {
+    content: "\f1bc";
+}
+
+#spotify-button {
+    background-color: #84bd00;
+    color: #000000;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    border-color: #000000;
+}
+
+#blurb {
+    color: #FFFFFF;
+}
+>>>>>>> a6fe59190a8874733fcd2e7e876a867d71027468
