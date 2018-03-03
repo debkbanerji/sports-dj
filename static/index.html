@@ -32,14 +32,18 @@
 <body class="page">
 <div class="container">
     <div id="login">
-        <br><center>
-        <div class="container-fluid-landing">
-            <div id="blurb">Be your own workout DJ!<br>Log in with your Spotify account
-            to select a playlist and analyze how well it fits specific exercises.</div><br>
-            <br><a href="/api/login" class="text-center btn" id="spotify-button">Log in with <i
-                class="fa fa-spotify" aria-hidden="true"></i>
-            Spotify</a>
-        </div></center>
+        <br>
+        <center>
+            <div class="container-fluid-landing">
+                <div id="blurb">Be your own workout DJ!<br>Log in with your Spotify account
+                    to select a playlist and analyze how well it fits specific exercises.
+                </div>
+                <br>
+                <br><a href="/api/login" class="text-center btn" id="spotify-button">Log in with <i
+                    class="fa fa-spotify" aria-hidden="true"></i>
+                Spotify</a>
+            </div>
+        </center>
     </div>
 </div>
 <div id="loggedin">
@@ -54,12 +58,12 @@
     </div>
     <br>
     <div class="row" id="buttonsRow">
-            <div id="viewPlaylistButton" class="col-sm">
-                <button type="button" class="btn btn-success" id="viewButton">View Playlists</button>
-            </div>
-            <div id="createPlaylistButton" class="col-sm">
-                <button type="button" class="btn btn-success" id="createButton">Create Playlist</button>
-            </div>
+        <div id="viewPlaylistButton" class="col-sm">
+            <button type="button" class="btn btn-success" id="viewButton">View Playlists</button>
+        </div>
+        <div id="createPlaylistButton" class="col-sm">
+            <button type="button" class="btn btn-success" id="createButton">Create Playlist</button>
+        </div>
     </div>
     <br>
 
@@ -101,6 +105,7 @@
         let user_id;
         let advancedModeShown = false;
         let submitShown = false;
+        var playlistData;
         if (error) {
             alert('There was an error during the authentication');
         } else {
@@ -172,11 +177,23 @@
                 });
             }
 
+            function setStoredUserInfo(data, callback) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/stored-user-info/' + userId,
+                    data: data,
+                    success: function (response) {
+                        if (callback) {
+                            callback(response)
+                        }
+                    }
+                });
+            }
+
             function getUserPlaylists() {
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
-                        console.log(response);
 
                         var body = document.getElementsByTagName("body")[0];
                         var newRow = document.createElement("newRow");
@@ -192,15 +209,8 @@
                         newdiv.setAttribute("id", "graphsDiv");
                         newdiv.setAttribute("class", "col-xs-7 col-sm-6 col-lg-8");
 
-                        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        svg.setAttribute('style', 'border: 1px grey');
-                        svg.setAttribute('width', '1080');
-                        svg.setAttribute('height', '2000');
-
-                        newdiv.appendChild(svg);
                         newRow.appendChild(newdiv);
                         body.appendChild(newRow);
-
 
                         var tbl = document.createElement('table');
 
@@ -234,6 +244,10 @@
 
                             tblBody.appendChild(row);
                             row.addEventListener('click', function() {
+                                if (document.getElementById('graphSVG') != null) {
+                                    var pSVG = document.getElementById('graphSVG');
+                                    pSVG.parentNode.removeChild(pSVG);
+                                }
                                 displayPlaylistData(this); //show graph
                             })
                         }
@@ -258,11 +272,11 @@
                         var pDiv = document.getElementById('createPlaylistDiv');
                         pDiv.parentNode.removeChild(pDiv);
                     }
-                    if ((document.getElementById('viewButton').className)=='btn btn-success') {
+                    if ((document.getElementById('viewButton').className) == 'btn btn-success') {
                         getUserPlaylists();
                     }
-                    document.getElementById("viewButton").className='btn btn-success disabled';
-                    document.getElementById("createButton").className='btn btn-success';
+                    document.getElementById("viewButton").className = 'btn btn-success disabled';
+                    document.getElementById("createButton").className = 'btn btn-success';
                 })
             }
 
@@ -292,129 +306,158 @@
                 // div.setAttribute("id", 'graphsDiv')
                 // body.appendChild(div);
 
-                // var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                // svg.setAttribute('style', 'border: 1px grey');
-                // svg.setAttribute('width', '1080');
-                // svg.setAttribute('height', '2000');
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('style', 'border: 1px grey');
+                svg.setAttribute('width', '1080');
+                svg.setAttribute('height', '2000');
+                svg.setAttribute('id', 'graphSVG');
+
+                var div = document.getElementById('graphsDiv');
+
+                div.appendChild(svg)
 
                 // div.appendChild(svg);
+                //
 
-                d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
-                        if (error) throw error;
-
-                        console.log(data)
+                d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function (error, data) {
+                    if (error) throw error;
 
                         var dataV = Object.values(data)
 
+                        playlistData = dataV;
+
                         var svgD3 = d3.select('svg');
 
-                        var maxDance = d3.max(dataV, function(d) {return d.danceability;})
+                    var maxDance = d3.max(dataV, function (d) {
+                        return d.danceability;
+                    })
 
-                        var maxValence = d3.max(dataV, function(d) {return d.valence;})
+                    var maxValence = d3.max(dataV, function (d) {
+                        return d.valence;
+                    })
 
-                        var maxEnergy = d3.max(dataV, function(d) {return d.energy;})
-
-                        var minEnergy = d3.min(dataV, function(d) {return d.energy;})
-                        console.log(minEnergy)
+                    var maxEnergy = d3.max(dataV, function (d) {
+                        return d.energy;
+                    })
 
                         var yscale1 = d3.scaleLinear()
                             .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
                             .range([400,0]);
 
-                        var songNames = dataV.map(function(d) {return d.name;})
+                    var songNames = dataV.map(function (d) {
+                        return d.name;
+                    })
 
-                        var xscale = d3.scaleLinear()
-                            .domain([0, songNames.length])
-                            .range([0, 1000])
+                    var xscale = d3.scaleLinear()
+                        .domain([0, songNames.length])
+                        .range([0, 1000])
 
-                        var yscale2 = d3.scaleLinear()
-                            .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
-                            .range([400,0]);
+                    var yscale2 = d3.scaleLinear()
+                        .domain([0, d3.max(dataV, function (d) {
+                            return d.tempo;
+                        })])
+                        .range([400, 0]);
 
-                        var yAxis1 = d3.axisLeft(yscale1).ticks(11);
+                    var yAxis1 = d3.axisLeft(yscale1).ticks(11);
 
-                        var yAxis2 = d3.axisLeft(yscale2).ticks(11);
+                    var yAxis2 = d3.axisLeft(yscale2).ticks(11);
 
-                        var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
+                    var xAxis = d3.axisBottom(xscale).ticks(songNames.length);
 
-                        var danceLine = d3.line()
-                            .x(function(d, i) {return xscale(i) + 30;})
-                            .y(function(d) {return yscale1(d.danceability);});
+                    var danceLine = d3.line()
+                        .x(function (d, i) {
+                            return xscale(i) + 30;
+                        })
+                        .y(function (d) {
+                            return yscale1(d.danceability);
+                        });
 
-                        var valenceLine = d3.line()
-                            .x(function(d, i) {return xscale(i) + 30;})
-                            .y(function(d) {return yscale1(d.valence);});
+                    var valenceLine = d3.line()
+                        .x(function (d, i) {
+                            return xscale(i) + 30;
+                        })
+                        .y(function (d) {
+                            return yscale1(d.valence);
+                        });
 
-                        var energyLine = d3.line()
-                            .x(function(d, i) {return xscale(i) + 30;})
-                            .y(function(d) {return yscale1(d.energy);});
+                    var energyLine = d3.line()
+                        .x(function (d, i) {
+                            return xscale(i) + 30;
+                        })
+                        .y(function (d) {
+                            return yscale1(d.energy);
+                        });
 
-                        var tempoLine = d3.line()
-                            .x(function(d, i) {return xscale(i) + 30;})
-                            .y(function(d) {return yscale2(d.tempo);});
+                    var tempoLine = d3.line()
+                        .x(function (d, i) {
+                            return xscale(i) + 30;
+                        })
+                        .y(function (d) {
+                            return yscale2(d.tempo);
+                        });
 
-                        svgD3.append("path")
-                          .data([dataV])
-                          .attr("class", "line")
-                          .attr('stroke', 'white')
-                          .attr('fill', 'none')
-                          .attr('transform', 'translate(0, 10)')
-                          .attr("d", danceLine);
+                    svgD3.append("path")
+                        .data([dataV])
+                        .attr("class", "line")
+                        .attr('stroke', 'white')
+                        .attr('fill', 'none')
+                        .attr('transform', 'translate(0, 10)')
+                        .attr("d", danceLine);
 
-                        svgD3.append("path")
-                          .data([dataV])
-                          .attr("class", "line")
-                          .attr('stroke', '#30842e')
-                          .attr('fill', 'none')
-                          .attr('transform', 'translate(0, 10)')
-                          .attr("d", valenceLine);
+                    svgD3.append("path")
+                        .data([dataV])
+                        .attr("class", "line")
+                        .attr('stroke', '#30842e')
+                        .attr('fill', 'none')
+                        .attr('transform', 'translate(0, 10)')
+                        .attr("d", valenceLine);
 
-                        svgD3.append("path")
-                          .data([dataV])
-                          .attr("class", "line")
-                          .attr('stroke', '#82D7E8')
-                          .attr('fill', 'none')
-                          .attr('transform', 'translate(0, 10)')
-                          .attr("d", energyLine);
+                    svgD3.append("path")
+                        .data([dataV])
+                        .attr("class", "line")
+                        .attr('stroke', '#82D7E8')
+                        .attr('fill', 'none')
+                        .attr('transform', 'translate(0, 10)')
+                        .attr("d", energyLine);
 
-                        svgD3.append("path")
-                          .data([dataV])
-                          .attr("class", "line")
-                          .attr('stroke', 'red')
-                          .attr('fill', 'none')
-                          .attr('transform', 'translate(0, 450)')
-                          .attr("d", tempoLine);
+                    svgD3.append("path")
+                        .data([dataV])
+                        .attr("class", "line")
+                        .attr('stroke', 'red')
+                        .attr('fill', 'none')
+                        .attr('transform', 'translate(0, 450)')
+                        .attr("d", tempoLine);
 
                         svgD3.append('g')
                             .attr('class', 'yaxis')
                             .attr('transform', 'translate(30, 10)')
-                            .attr('stroke', 'white')
+                            .style('stroke', 'white')
                             .call(yAxis1);
 
-                        svgD3.append('g')
-                            .attr('class', 'yaxis')
-                            .attr('transform', 'translate(30, 450)')
-                            .attr('stroke', 'white')
-                            .call(yAxis2);
+                    svgD3.append('g')
+                        .attr('class', 'yaxis')
+                        .attr('transform', 'translate(30, 450)')
+                        .attr('stroke', 'white')
+                        .call(yAxis2);
 
-                        svgD3.append('g')
-                            .attr('class', 'xaxis')
-                            .attr('transform', 'translate(30, 410)')
-                            .attr('stroke', 'white')
-                            .call(xAxis);
+                    svgD3.append('g')
+                        .attr('class', 'xaxis')
+                        .attr('transform', 'translate(30, 410)')
+                        .attr('stroke', 'white')
+                        .call(xAxis);
 
-                        svgD3.append('g')
-                            .attr('class', 'xaxis')
-                            .attr('transform', 'translate(30, 860)')
-                            .attr('stroke', 'white')
-                            .call(xAxis);
+                    svgD3.append('g')
+                        .attr('class', 'xaxis')
+                        .attr('transform', 'translate(30, 860)')
+                        .attr('stroke', 'white')
+                        .call(xAxis);
 
-                    })
+                })
             }
 
             function setCreateUserPlaylistsListener() {
                 document.getElementById("createPlaylistButton").addEventListener("click", function () {
-                    if ((document.getElementById('createButton').className)=='btn btn-success') {
+                    if ((document.getElementById('createButton').className) == 'btn btn-success') {
                         var pDiv = document.getElementById('viewPlaylistDiv');
                         pDiv.parentNode.removeChild(pDiv);
                     }
@@ -425,8 +468,8 @@
                     div.setAttribute("id", "createPlaylistDiv");
 
                     body.appendChild(div)
-                    document.getElementById("createButton").className='btn btn-success disabled';
-                    document.getElementById("viewButton").className='btn btn-success';
+                    document.getElementById("createButton").className = 'btn btn-success disabled';
+                    document.getElementById("viewButton").className = 'btn btn-success';
                 })
             }
 
@@ -452,6 +495,24 @@
                     url: '/api/playlist-info/' + userId + '/' + playlistId + '?accessToken=' + accessToken,
                     success: function (response) {
                         callback(response)
+                    }
+                });
+            }
+
+            function createPlaylistInfo(userId, playlistName, exerciseType, callback) {
+                $.ajax({
+                    type: "POST",
+                    url: '/api/create-playlist/',
+                    data: {
+                        'accessToken': accessToken,
+                        'userId': userId,
+                        'playlistName': playlistName,
+                        'exerciseType': exerciseType
+                    },
+                    success: function (response) {
+                        if (callback) {
+                            callback(response)
+                        }
                     }
                 });
             }
