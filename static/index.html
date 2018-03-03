@@ -308,7 +308,7 @@
 
                 var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.setAttribute('style', 'border: 1px grey');
-                svg.setAttribute('width', '1080');
+                svg.setAttribute('width', '1500');
                 svg.setAttribute('height', '2000');
                 svg.setAttribute('id', 'graphSVG');
 
@@ -420,6 +420,46 @@
                             return yscale2(d['exercise-intensity']);
                         });
 
+                    svgD3.append('line')
+                        .attr('x1', 1070)
+                        .attr('y1', 100)
+                        .attr('x2', 1090)
+                        .attr('y2', 100)
+                        .attr('stroke', 'white');
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'left')
+                        .attr('transform', 'translate(1100,105)')
+                        .text('Danceability')
+
+                    svgD3.append('line')
+                        .attr('x1', 1070)
+                        .attr('y1', 130)
+                        .attr('x2', 1090)
+                        .attr('y2', 130)
+                        .attr('stroke', '#30842e');
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'left')
+                        .attr('transform', 'translate(1100,135)')
+                        .text('Valence')
+
+                    svgD3.append('line')
+                        .attr('x1', 1070)
+                        .attr('y1', 160)
+                        .attr('x2', 1090)
+                        .attr('y2', 160)
+                        .attr('stroke', '#82D7E8');
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'left')
+                        .attr('transform', 'translate(1100,165)')
+                        .text('Energy')
+                        
+
                     svgD3.append("path")
                         .data([dataV])
                         .attr("class", "line")
@@ -443,6 +483,32 @@
                         .attr('fill', 'none')
                         .attr('transform', 'translate(0, 30)')
                         .attr("d", energyLine);
+
+                    svgD3.append('line')
+                        .attr('x1', 1070)
+                        .attr('y1', 620)
+                        .attr('x2', 1090)
+                        .attr('y2', 620)
+                        .attr('stroke', 'red');
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'left')
+                        .attr('transform', 'translate(1100,625)')
+                        .text('Tempo')
+
+                    svgD3.append('line')
+                        .attr('x1', 1070)
+                        .attr('y1', 650)
+                        .attr('x2', 1090)
+                        .attr('y2', 650)
+                        .attr('stroke', 'blue');
+
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'left')
+                        .attr('transform', 'translate(1100,655)')
+                        .text('Intensity')
 
                     svgD3.append("path")
                         .data([dataV])
