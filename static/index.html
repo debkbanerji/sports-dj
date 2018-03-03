@@ -414,6 +414,7 @@
                     if (error) throw error;
 
                     var dataV = Object.values(data)
+                    console.log(dataV)
 
                     // if (showSongs) {
                     //     addTableRows(element, dataV)
@@ -421,11 +422,56 @@
                     //     deleteTableRows(element, dataV)
                     // }
 
-                    console.log(dataV)
-
                     playlistData = dataV;
 
                     var svgD3 = d3.select('svg');
+
+                    var exTypes = d3.nest()
+                        .key(function(d) {return d['exercise-type'];})
+                        .rollup(function(values) {return d3.sum(values, function() {return 1;})})
+                        .entries(dataV);
+
+                    var barYscale = d3.scaleLinear()
+                        .domain([0,d3.max(exTypes, function(d) {return d.value;})])
+                        .range([400,0])
+
+                    var barXscale = d3.scaleOrdinal()
+                        .domain(data.map(function(d) {return d['exercise-type'];}))
+                        .range([75,235, 395])
+
+                    var barXaxis = d3.axisBottom(barXscale).ticks(3);
+
+                    var barYaxis = d3.axisLeft(barYscale).ticks(6);
+
+                    svgD3.append('g')
+                        .attr('class', 'yaxis')
+                        .attr('transform', 'translate(50, 950)')
+                        .attr('stroke', 'white')
+                        .call(barYaxis);
+
+                    svgD3.append('g')
+                        .attr('class', 'barxaxis')
+                        .attr('transform', 'translate(50, 1350)')
+                        .attr('stroke', 'white')
+                        .call(barXaxis);
+
+                    // svgD3.selectAll('rect')
+                    //     .data(exTypes)
+                    //     .enter
+                    //     .append('rect')
+                    //     .attr('fill', function(d) {
+                    //         if (d.value == 'Cardio') {
+                    //             return '#30842e';
+                    //         } else if (d.value == 'Yoga') {
+                    //             return '#82D7E8';
+                    //         } 
+                    //         return 'white';
+                    //     })
+                    //     .attr('transform', function(d, i) {return 'translate(' + (75 + i*100) + ',' + (950+ barYscale(d.value)) + ')';})
+                    //     .attr('width', 100)
+                    //     .attr('height', function(d) {return 400-barYscale(d.value);})
+
+                    console.log(exTypes)
 
                     var maxDance = d3.max(dataV, function (d) {
                         return d.danceability;
