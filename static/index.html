@@ -53,7 +53,7 @@
                 <button type="button" class="btn btn-success" id="viewButton">View Playlist</button>
             </div>
             <div id="createPlaylistButton" class="col-sm">
-                <button type="button" class="btn btn-success">Create Playlist</button>
+                <button type="button" class="btn btn-success" id="createButton">Create Playlist</button>
             </div>
     </div>
     <br>
@@ -174,10 +174,14 @@
                         console.log(response);
 
                         var body = document.getElementsByTagName("body")[0];
-
+                        var newRow = document.createElement('newRow');
+                        newRow.setAttribute("class", "row");
 
                         var div = document.createElement('div');
                         div.setAttribute("id", "viewPlaylistDiv");
+                        div.setAttribute("class", "col-sm");
+                        newRow.appendChild(div);
+                        // TODO: create other column and add as child to newRow
 
                         var tbl = document.createElement('table');
 
@@ -229,8 +233,11 @@
                         var pDiv = document.getElementById('createPlaylistDiv');
                         pDiv.parentNode.removeChild(pDiv);
                     }
-                    getUserPlaylists();
+                    if ((document.getElementById('viewButton').className)=='btn btn-success') {
+                        getUserPlaylists();
+                    }
                     document.getElementById("viewButton").className='btn btn-success disabled';
+                    document.getElementById("createButton").className='btn btn-success';
                 })
             }
 
@@ -240,7 +247,7 @@
 
             function setCreateUserPlaylistsListener() {
                 document.getElementById("createPlaylistButton").addEventListener("click", function () {
-                    if (document.getElementById('viewPlaylistDiv') != null) {
+                    if ((document.getElementById('createButton').className)=='btn btn-success') {
                         var pDiv = document.getElementById('viewPlaylistDiv');
                         pDiv.parentNode.removeChild(pDiv);
                     }
@@ -251,6 +258,8 @@
                     div.setAttribute("id", "createPlaylistDiv");
 
                     body.appendChild(div)
+                    document.getElementById("createButton").className='btn btn-success disabled';
+                    document.getElementById("viewButton").className='btn btn-success';
                 })
             }
 
