@@ -53,7 +53,7 @@
                 <button type="button" class="btn btn-success">View Playlist</button>
             </div>
             <div id="createPlaylistButton" class="col-sm">
-                <button type="button" onclick="alert('Hello world!')" class="btn btn-success">Create Playlist</button>
+                <button type="button" class="btn btn-success">Create Playlist</button>
             </div>
     </div>
     <br>
@@ -120,7 +120,7 @@
                         console.log('Hello ' + userId);
                         getStoredUserInfo();
                         setGetUserPlaylistsListener();
-                        //tableRowListener();
+                        setCreateUserPlaylistsListener();
                     }
                 });
             } else {
@@ -193,8 +193,14 @@
                             var cell = document.createElement("td");
                             var cellText = document.createTextNode(response[i]["name"]);
 
+                            var cell2 = document.createElement("td");
+                            var id = document.createTextNode(response[i]["id"]);
+
                             cell.appendChild(cellText);
+                            cell2.appendChild(id);
+                            cell2.setAttribute('hidden', 'true');
                             row.appendChild(cell);
+                            row.appendChild(cell2);
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
@@ -224,7 +230,19 @@
             }
 
             function displayPlaylistData(element) {
-                console.log(element.cells[0].innerHTML);
+                console.log(element.cells[1].innerHTML);
+            }
+
+            function setCreateUserPlaylistsListener() {
+                document.getElementById("createPlaylistButton").addEventListener("click", function () {
+                    console.log("in listener")
+                    var body = document.getElementsByTagName("body")[0];
+
+                    var div = document.createElement('div');
+                    div.setAttribute("id", "createPlaylistDiv");
+
+                    body.appendChild(div)
+                })
             }
 
 
