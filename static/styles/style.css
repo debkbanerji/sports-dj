@@ -3,10 +3,9 @@ body {
     background-size: cover;
 }
 
-#createPlaylistButton {
-    position: absolute;
-    top: 400px;
-    left: 900px;
+.row {
+    text-align: center;
+    width: 100%;
 }
 
 #viewPlaylistButton {
