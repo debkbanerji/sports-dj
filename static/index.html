@@ -203,6 +203,21 @@
                     getUserPlaylists();
                 })
             }
+
+            function refreshPlaylistInfo(playlistID) {
+                $.ajax({
+                    type: "POST",
+                    url: '/api/refresh-playlist-info/',
+                    data: {
+                        'accessToken': accessToken,
+                        'userId': userId,
+                        'playlistID': playlistID
+                    },
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
         }
     })();
 
