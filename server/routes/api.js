@@ -292,8 +292,8 @@ processSongList = function (index, songMap, userID, playlistID, accessToken, fin
                             songMap[id].time_signature = songData.time_signature;
                             songMap[id].danceability = songData.danceability;
 
-                            songMap[id].exerciseSuitability = 80*songData.valence + (1-songData.liveness)*20;
-                            songMap[id].exerciseIntensity = 40*songData.danceability + 30*songData.valence + 30*songData.energy;
+                            songMap[id].exerciseSuitability = 80 * songData.valence + (1 - songData.liveness) * 20;
+                            songMap[id].exerciseIntensity = 40 * songData.danceability + 30 * songData.valence + 30 * songData.energy;
                         }
 
                         processSongList(index + items.length, songMap, userID, playlistID, accessToken, finalRes, callback);
@@ -335,12 +335,12 @@ router.get('/playlist-info/:userID/:playlistID', function (req, res) {
     });
 });
 
-getSongList = function(songMap) {
+getSongList = function (songMap) {
     if (!songMap) {
         return false;
     }
     let songList = Object.values(songMap);
-    songList = songList.sort(function(a, b){
+    songList = songList.sort(function (a, b) {
         return a.index - b.index;
     });
     return songList;
