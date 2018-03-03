@@ -190,7 +190,6 @@
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
                     success: function (response) {
-                        console.log(response);
 
                         var body = document.getElementsByTagName("body")[0];
                         var newRow = document.createElement('newRow');
@@ -316,8 +315,6 @@
                 d3.json('/api/playlist-info/' + element.cells[2].innerHTML + '/' + element.cells[1].innerHTML + '?accessToken=' + accessToken, function(error, data) {
                         if (error) throw error;
 
-                        console.log(data)
-
                         var dataV = Object.values(data)
 
                         playlistData = dataV;
@@ -329,9 +326,6 @@
                         var maxValence = d3.max(dataV, function(d) {return d.valence;})
 
                         var maxEnergy = d3.max(dataV, function(d) {return d.energy;})
-
-                        var minEnergy = d3.min(dataV, function(d) {return d.energy;})
-                        console.log(minEnergy)
 
                         var yscale1 = d3.scaleLinear()
                             .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
@@ -404,7 +398,7 @@
                         svgD3.append('g')
                             .attr('class', 'yaxis')
                             .attr('transform', 'translate(30, 10)')
-                            .attr('stroke', 'white')
+                            .style('stroke', 'white')
                             .call(yAxis1);
 
                         svgD3.append('g')
