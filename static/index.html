@@ -19,7 +19,7 @@
     <script src="https://use.fontawesome.com/287f0668e1.js"></script>
     <link href="https://use.fontawesome.com/287f0668e1.css" media="all" rel="stylesheet">
     <style type="text/css">
-        #login, #loggedin, #submitPlaylistForm {
+        #login, #loggedin, #submitPlaylistForm, #submit-bmi-container {
             display: none;
         }
     </style>
@@ -73,26 +73,41 @@
     <form class="form-horizontal" action="/action_page.php">
         <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Exercise Type
-            <span class="caret"></span></button>
+                <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li>Strength</li>
-              <li>Cardio</li>
-              <li>Yoga</li>
+                <li>Strength</li>
+                <li>Cardio</li>
+                <li>Yoga</li>
             </ul>
-         </div>
-         <div class="form-group">
-          <label class="control-label col-sm" for="numSongs">Number of Songs</label>
-          <div class="col-sm-10">
-            <input type="numSongs" class="form-control" id="numSongs" placeholder="Enter number of songs" name="numSongs">
-          </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm" for="numSongs">Number of Songs</label>
+            <div class="col-sm-10">
+                <input type="numSongs" class="form-control" id="numSongs" placeholder="Enter number of songs"
+                       name="numSongs">
+            </div>
         </div>
         <br>
         <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Submit</button>
-          </div>
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
         </div>
-      </form>
+    </form>
+</div>
+
+<div id="submit-bmi-container" class="container">
+    <br>
+    <center>
+        <div class="container-fluid-landing">
+            <br>
+            <input id="user-height" placeholder="height (metres)" type="number">
+            <input id="user-weight" placeholder="weight (kilograms)" type="number">
+            <a class="text-center btn btn btn-success" id="submit-bmi">
+                Submit
+            </a>
+        </div>
+    </center>
 </div>
 
 <script id="oauth-template" type="text/x-handlebars-template">
@@ -147,15 +162,33 @@
                     success: function (response) {
                         authResponse = response;
                         userId = response.id;
-                        $('#login').hide();
-                        $('#submitPlaylistForm').hide();
-                        $('#loggedin').show();
+                        // $('#login').hide();
+                        // $('#submitPlaylistForm').hide();
+                        // $('#loggedin').show();
 
                         // Set up listeners
-                        console.log('Hello ' + userId);
-                        getStoredUserInfo();
-                        setGetUserPlaylistsListener();
-                        setCreateUserPlaylistsListener();
+                        getStoredUserInfo(function (response) {
+                            if (response) {
+                                initLoggedIn();
+                            } else {
+                                $('#login').hide();
+                                $('#submitPlaylistForm').hide();
+                                $('#loggedin').hide();
+                                $('#submit-bmi-container').show();
+                                document.getElementById('submit-bmi').addEventListener('click', function () {
+                                    const height = document.getElementById('user-height').value;
+                                    const weight = document.getElementById('user-weight').value;
+                                    const bmi = weight / (height * height);
+                                    setStoredUserInfo({
+                                        height: height,
+                                        weight: weight,
+                                        bmi: bmi
+                                    }, function (response) {
+                                        initLoggedIn();
+                                    })
+                                });
+                            }
+                        });
                     }
                 });
             } else {
@@ -180,6 +213,15 @@
             };
             document.getElementById('obtain-new-token').addEventListener('click', obtainNewToken, false);
 
+            function initLoggedIn() {
+                $('#login').hide();
+                $('#submitPlaylistForm').hide();
+                $('#loggedin').show();
+                $('#submit-bmi-container').hide();
+                setGetUserPlaylistsListener();
+                setCreateUserPlaylistsListener();
+            }
+
             function toTitleCase(str) {
                 return str.replace(/\w\S*/g, function (txt) {
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -194,11 +236,12 @@
                 return div.firstChild;
             }
 
-            function getStoredUserInfo() {
+            function getStoredUserInfo(callback) {
                 $.ajax({
                     url: '/api/stored-user-info/' + userId,
                     success: function (response) {
-                        console.log(response);
+                        callback(response);
+                        console.log('response', response);
                     }
                 });
             }
@@ -269,7 +312,7 @@
                             row.setAttribute('class', 'tableRow');
 
                             tblBody.appendChild(row);
-                            row.addEventListener('click', function() {
+                            row.addEventListener('click', function () {
                                 if (document.getElementById('graphSVG') != null) {
                                     var pSVG = document.getElementById('graphSVG');
                                     pSVG.parentNode.removeChild(pSVG);
@@ -372,20 +415,22 @@
                     })
 
                     var yscale1 = d3.scaleLinear()
-                        .domain([0,d3.max([maxDance, maxValence, maxEnergy])])
-                        .range([400,0]);
+                        .domain([0, d3.max([maxDance, maxValence, maxEnergy])])
+                        .range([400, 0]);
 
                     var songNames = dataV.map(function (d) {
                         return d.name;
                     })
 
                     var xscale = d3.scaleLinear()
-                            .domain([0, songNames.length])
-                            .range([0, 1000])
+                        .domain([0, songNames.length])
+                        .range([0, 1000])
 
                     var yscale2 = d3.scaleLinear()
-                        .domain([0,d3.max(dataV, function(d) {return d.tempo;})])
-                        .range([400,0]);
+                        .domain([0, d3.max(dataV, function (d) {
+                            return d.tempo;
+                        })])
+                        .range([400, 0]);
 
                     var yAxis1 = d3.axisLeft(yscale1).ticks(11);
 
