@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet" type="text/css" href="styles/style.css"
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
     <meta property="og:title" content="Sports DJ"/>
     <meta property="og:description"
@@ -23,6 +24,7 @@
     <div>
         <center><img src="assets/png/sportsdj.png"></center>
     </div>
+
 </head>
 
 <body class="page">
@@ -54,10 +56,7 @@
                 <button type="button" onclick="alert('Hello world!')" class="btn btn-success">Create Playlist</button>
             </div>
     </div>
-
-    <!-- <div id="backButton" class="col-sm">
-        <button type="button" class="btn btn-success">Return</button>
-    </div> -->
+    <br>
 
 </div>
 </div>
@@ -178,7 +177,7 @@
 
 
                         var div = document.createElement('div');
-                        div.setAttribute("id", "playlistDiv")
+                        div.setAttribute("id", "playlistDiv");
 
                         var tbl = document.createElement('table');
 
@@ -221,7 +220,6 @@
             function setGetUserPlaylistsListener() {
                 document.getElementById("viewPlaylistButton").addEventListener("click", function () {
                     getUserPlaylists();
-                    document.getElementById("buttonsRow").style.display = "none";
                 })
             }
 
