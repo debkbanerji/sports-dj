@@ -34,7 +34,8 @@
     <div id="login">
         <br><center>
         <div class="container-fluid-landing">
-            <div id="blurb">Be your own workout DJ!</div><br>
+            <div id="blurb">Be your own workout DJ!<br>Log in with your Spotify account
+            to select a playlist and analyze how well it fits specific exercises.</div><br>
             <br><a href="/api/login" class="text-center btn" id="spotify-button">Log in with <i
                 class="fa fa-spotify" aria-hidden="true"></i>
             Spotify</a>
@@ -172,6 +173,19 @@
                 });
             }
 
+            function setStoredUserInfo(data, callback) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/stored-user-info/' + userId,
+                    data: data,
+                    success: function (response) {
+                        if (callback) {
+                            callback(response)
+                        }
+                    }
+                });
+            }
+
             function getUserPlaylists() {
                 $.ajax({
                     url: '/api/playlist-list/' + userId + '?accessToken=' + accessToken,
@@ -228,7 +242,7 @@
                                     var pSVG = document.getElementById('graphSVG');
                                     pSVG.parentNode.removeChild(pSVG);
                                 }
-                                displayPlaylistData(this);
+                                displayPlaylistData(this); //show graph
                             })
                         }
 
@@ -310,7 +324,7 @@
 
                         var svgD3 = d3.select('svg');
 
-                        var maxDance = d3.max(dataV, function(d) {return d.danceability;}) 
+                        var maxDance = d3.max(dataV, function(d) {return d.danceability;})
 
                         var maxValence = d3.max(dataV, function(d) {return d.valence;})
 
