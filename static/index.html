@@ -492,23 +492,40 @@
                         .attr('stroke', 'white')
                         .call(barXaxis);
 
-                    // svgD3.selectAll('rect')
-                    //     .data(exTypes)
-                    //     .enter
-                    //     .append('rect')
-                    //     .attr('fill', function(d) {
-                    //         if (d.value == 'Cardio') {
-                    //             return '#30842e';
-                    //         } else if (d.value == 'Yoga') {
-                    //             return '#82D7E8';
-                    //         } 
-                    //         return 'white';
-                    //     })
-                    //     .attr('transform', function(d, i) {return 'translate(' + (75 + i*100) + ',' + (950+ barYscale(d.value)) + ')';})
-                    //     .attr('width', 100)
-                    //     .attr('height', function(d) {return 400-barYscale(d.value);})
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(20,1150)rotate(-90)')
+                        .text('Number of Songs in Playlist')
 
-                    console.log(exTypes)
+                    svgD3.append('text')
+                        .attr('class', 'text')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(300,1390)')
+                        .text('Song Exercise Type')
+
+                    svgD3.append('text')
+                        .attr('class', 'title')
+                        .attr('text-anchor', 'middle')
+                        .attr('transform', 'translate(300,940)')
+                        .text('Song Suitability Breakdown')
+
+                    svgD3.selectAll('rect')
+                        .data(exTypes)
+                        .enter()
+                        .append('rect')
+                        .attr('fill', function(d) {
+                            if (d.key == 'Cardio') {
+                                return '#30842e';
+                            } else if (d.key == 'Yoga') {
+                                return '#82D7E8';
+                            } 
+                            return 'white';
+                        })
+                        .attr('transform', function(d, i) {return 'translate(' + (75 + i*160) + ',' + (950+ barYscale(d.value)) + ')';})
+                        .attr('width', 100)
+                        .attr('height', function(d) {return 400-barYscale(d.value);})
+
 
                     var maxDance = d3.max(dataV, function (d) {
                         return d.danceability;
